@@ -12,10 +12,10 @@ unsigned long ulRunTimeStatsClock = 0;
 
 //=========================================================================================================
 static void prvSetupHardware(void);	// 硬件初始化函数
-extern void prvUserTasks(void);		
 
 //=========================================================================================================
 // 主函数
+// 硬件初始化, 任务创建, 开启调度器
 //=========================================================================================================
 int main(void)
 {
@@ -62,12 +62,8 @@ static void prvSetupHardware( void )
 	GPIO_InitTypeDef  	GPIO_InitStructure;	
 
 	//外设时钟配置---ENABLE
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);	// SPI2模块时钟
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);  // USART1模块时钟	
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1 | 		// DMA1模块时钟
-				RCC_AHBPeriph_GPIOA |		// GPIOA模块时钟
-				RCC_AHBPeriph_GPIOB | 		// GPIOB模块时钟
-				RCC_AHBPeriph_GPIOC, ENABLE);	// GPIOC模块时钟											
+	RCC_AHBPeriphClockCmd(	RCC_AHBPeriph_GPIOA |		// GPIOA模块时钟
+				RCC_AHBPeriph_GPIOE, ENABLE);	// GPIOE模块时钟											
 
 	/*
 	 * LED GPIO初始化

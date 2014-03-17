@@ -123,8 +123,8 @@ static size_t xFreeBytesRemaining = configADJUSTED_HEAP_SIZE;
  */
 #define prvInsertBlockIntoFreeList( pxBlockToInsert )								\
 {																					\
-BlockLink_t *pxIterator;																\
-size_t xBlockSize;																	\
+	BlockLink_t *pxIterator;																\
+	size_t xBlockSize;																	\
 																					\
 	xBlockSize = pxBlockToInsert->xBlockSize;										\
 																					\
@@ -144,9 +144,9 @@ size_t xBlockSize;																	\
 
 void *pvPortMalloc( size_t xWantedSize )
 {
-BlockLink_t *pxBlock, *pxPreviousBlock, *pxNewBlockLink;
-static BaseType_t xHeapHasBeenInitialised = pdFALSE;
-void *pvReturn = NULL;
+	BlockLink_t *pxBlock, *pxPreviousBlock, *pxNewBlockLink;
+	static BaseType_t xHeapHasBeenInitialised = pdFALSE;
+	void *pvReturn = NULL;
 
 	vTaskSuspendAll();
 	{
@@ -236,8 +236,8 @@ void *pvReturn = NULL;
 
 void vPortFree( void *pv )
 {
-uint8_t *puc = ( uint8_t * ) pv;
-BlockLink_t *pxLink;
+	uint8_t *puc = ( uint8_t * ) pv;
+	BlockLink_t *pxLink;
 
 	if( pv != NULL )
 	{
@@ -275,8 +275,8 @@ void vPortInitialiseBlocks( void )
 
 static void prvHeapInit( void )
 {
-BlockLink_t *pxFirstFreeBlock;
-uint8_t *pucAlignedHeap;
+	BlockLink_t *pxFirstFreeBlock;
+	uint8_t *pucAlignedHeap;
 
 	/* Ensure the heap starts on a correctly aligned boundary. */
 	pucAlignedHeap = ( uint8_t * ) ( ( ( portPOINTER_SIZE_TYPE ) &ucHeap[ portBYTE_ALIGNMENT ] ) & ( ( portPOINTER_SIZE_TYPE ) ~portBYTE_ALIGNMENT_MASK ) );

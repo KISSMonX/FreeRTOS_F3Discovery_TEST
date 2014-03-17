@@ -235,7 +235,7 @@ static void prvProcessTimerOrBlockTask( const TickType_t xNextExpireTime, const 
 
 BaseType_t xTimerCreateTimerTask( void )
 {
-BaseType_t xReturn = pdFAIL;
+	BaseType_t xReturn = pdFAIL;
 
 	/* This function is called when the scheduler is started if
 	configUSE_TIMERS is set to 1.  Check that the infrastructure used by the
@@ -270,7 +270,7 @@ BaseType_t xReturn = pdFAIL;
 
 TimerHandle_t xTimerCreate( const char * const pcTimerName, const TickType_t xTimerPeriodInTicks, const UBaseType_t uxAutoReload, void * const pvTimerID, TimerCallbackFunction_t pxCallbackFunction ) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 {
-Timer_t *pxNewTimer;
+	Timer_t *pxNewTimer;
 
 	/* Allocate the timer structure. */
 	if( xTimerPeriodInTicks == ( TickType_t ) 0U )
@@ -311,8 +311,8 @@ Timer_t *pxNewTimer;
 
 BaseType_t xTimerGenericCommand( TimerHandle_t xTimer, const BaseType_t xCommandID, const TickType_t xOptionalValue, BaseType_t * const pxHigherPriorityTaskWoken, const TickType_t xTicksToWait )
 {
-BaseType_t xReturn = pdFAIL;
-DaemonTaskMessage_t xMessage;
+	BaseType_t xReturn = pdFAIL;
+	DaemonTaskMessage_t xMessage;
 
 	/* Send a message to the timer service task to perform a particular action
 	on a particular timer definition. */
@@ -365,8 +365,8 @@ DaemonTaskMessage_t xMessage;
 
 static void prvProcessExpiredTimer( const TickType_t xNextExpireTime, const TickType_t xTimeNow )
 {
-BaseType_t xResult;
-Timer_t * const pxTimer = ( Timer_t * ) listGET_OWNER_OF_HEAD_ENTRY( pxCurrentTimerList );
+	BaseType_t xResult;
+	Timer_t * const pxTimer = ( Timer_t * ) listGET_OWNER_OF_HEAD_ENTRY( pxCurrentTimerList );
 
 	/* Remove the timer from the list of active timers.  A check has already
 	been performed to ensure the list is not empty. */
@@ -405,8 +405,8 @@ Timer_t * const pxTimer = ( Timer_t * ) listGET_OWNER_OF_HEAD_ENTRY( pxCurrentTi
 
 static void prvTimerTask( void *pvParameters )
 {
-TickType_t xNextExpireTime;
-BaseType_t xListWasEmpty;
+	TickType_t xNextExpireTime;
+	BaseType_t xListWasEmpty;
 
 	/* Just to avoid compiler warnings. */
 	( void ) pvParameters;
@@ -429,8 +429,8 @@ BaseType_t xListWasEmpty;
 
 static void prvProcessTimerOrBlockTask( const TickType_t xNextExpireTime, const BaseType_t xListWasEmpty )
 {
-TickType_t xTimeNow;
-BaseType_t xTimerListsWereSwitched;
+	TickType_t xTimeNow;
+	BaseType_t xTimerListsWereSwitched;
 
 	vTaskSuspendAll();
 	{
@@ -482,7 +482,7 @@ BaseType_t xTimerListsWereSwitched;
 
 static TickType_t prvGetNextExpireTime( BaseType_t * const pxListWasEmpty )
 {
-TickType_t xNextExpireTime;
+	TickType_t xNextExpireTime;
 
 	/* Timers are listed in expiry time order, with the head of the list
 	referencing the task that will expire first.  Obtain the time at which
@@ -508,8 +508,8 @@ TickType_t xNextExpireTime;
 
 static TickType_t prvSampleTimeNow( BaseType_t * const pxTimerListsWereSwitched )
 {
-TickType_t xTimeNow;
-PRIVILEGED_DATA static TickType_t xLastTime = ( TickType_t ) 0U; /*lint !e956 Variable is only accessible to one task. */
+	TickType_t xTimeNow;
+	PRIVILEGED_DATA static TickType_t xLastTime = ( TickType_t ) 0U; /*lint !e956 Variable is only accessible to one task. */
 
 	xTimeNow = xTaskGetTickCount();
 
@@ -531,7 +531,7 @@ PRIVILEGED_DATA static TickType_t xLastTime = ( TickType_t ) 0U; /*lint !e956 Va
 
 static BaseType_t prvInsertTimerInActiveList( Timer_t * const pxTimer, const TickType_t xNextExpiryTime, const TickType_t xTimeNow, const TickType_t xCommandTime )
 {
-BaseType_t xProcessTimerNow = pdFALSE;
+	BaseType_t xProcessTimerNow = pdFALSE;
 
 	listSET_LIST_ITEM_VALUE( &( pxTimer->xTimerListItem ), xNextExpiryTime );
 	listSET_LIST_ITEM_OWNER( &( pxTimer->xTimerListItem ), pxTimer );
@@ -572,10 +572,10 @@ BaseType_t xProcessTimerNow = pdFALSE;
 
 static void	prvProcessReceivedCommands( void )
 {
-DaemonTaskMessage_t xMessage;
-Timer_t *pxTimer;
-BaseType_t xTimerListsWereSwitched, xResult;
-TickType_t xTimeNow;
+	DaemonTaskMessage_t xMessage;
+	Timer_t *pxTimer;
+	BaseType_t xTimerListsWereSwitched, xResult;
+	TickType_t xTimeNow;
 
 	while( xQueueReceive( xTimerQueue, &xMessage, tmrNO_DELAY ) != pdFAIL ) /*lint !e603 xMessage does not have to be initialised as it is passed out, not in, and it is not used unless xQueueReceive() returns pdTRUE. */
 	{
@@ -698,10 +698,10 @@ TickType_t xTimeNow;
 
 static void prvSwitchTimerLists( void )
 {
-TickType_t xNextExpireTime, xReloadTime;
-List_t *pxTemp;
-Timer_t *pxTimer;
-BaseType_t xResult;
+	TickType_t xNextExpireTime, xReloadTime;
+	List_t *pxTemp;
+	Timer_t *pxTimer;
+	BaseType_t xResult;
 
 	/* The tick count has overflowed.  The timer lists must be switched.
 	If there are any timers still referenced from the current timer list
@@ -795,8 +795,8 @@ static void prvCheckForValidListAndQueue( void )
 
 BaseType_t xTimerIsTimerActive( TimerHandle_t xTimer )
 {
-BaseType_t xTimerIsInActiveList;
-Timer_t *pxTimer = ( Timer_t * ) xTimer;
+	BaseType_t xTimerIsInActiveList;
+	Timer_t *pxTimer = ( Timer_t * ) xTimer;
 
 	/* Is the timer in the list of active timers? */
 	taskENTER_CRITICAL();
@@ -814,7 +814,7 @@ Timer_t *pxTimer = ( Timer_t * ) xTimer;
 
 void *pvTimerGetTimerID( const TimerHandle_t xTimer )
 {
-Timer_t * const pxTimer = ( Timer_t * ) xTimer;
+	Timer_t * const pxTimer = ( Timer_t * ) xTimer;
 
 	return pxTimer->pvTimerID;
 }
@@ -824,8 +824,8 @@ Timer_t * const pxTimer = ( Timer_t * ) xTimer;
 
 	BaseType_t xTimerPendFunctionCallFromISR( PendedFunction_t xFunctionToPend, void *pvParameter1, uint32_t ulParameter2, BaseType_t *pxHigherPriorityTaskWoken )
 	{
-	DaemonTaskMessage_t xMessage;
-	BaseType_t xReturn;
+		DaemonTaskMessage_t xMessage;
+		BaseType_t xReturn;
 
 		/* Complete the message with the function parameters and post it to the
 		daemon task. */
@@ -848,8 +848,8 @@ Timer_t * const pxTimer = ( Timer_t * ) xTimer;
 
 	BaseType_t xTimerPendFunctionCall( PendedFunction_t xFunctionToPend, void *pvParameter1, uint32_t ulParameter2, TickType_t xTicksToWait )
 	{
-	DaemonTaskMessage_t xMessage;
-	BaseType_t xReturn;
+		DaemonTaskMessage_t xMessage;
+		BaseType_t xReturn;
 
 		/* Complete the message with the function parameters and post it to the
 		daemon task. */

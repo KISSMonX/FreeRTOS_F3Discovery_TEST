@@ -101,7 +101,7 @@ void vListInitialiseItem( ListItem_t * const pxItem )
 
 void vListInsertEnd( List_t * const pxList, ListItem_t * const pxNewListItem )
 {
-ListItem_t * const pxIndex = pxList->pxIndex;
+	ListItem_t * const pxIndex = pxList->pxIndex;
 
 	/* Insert a new list item into pxList, but rather than sort the list,
 	makes the new list item the last item to be removed by a call to
@@ -120,8 +120,8 @@ ListItem_t * const pxIndex = pxList->pxIndex;
 
 void vListInsert( List_t * const pxList, ListItem_t * const pxNewListItem )
 {
-ListItem_t *pxIterator;
-const TickType_t xValueOfInsertion = pxNewListItem->xItemValue;
+	ListItem_t *pxIterator;
+	const TickType_t xValueOfInsertion = pxNewListItem->xItemValue;
 
 	/* Insert the new list item into the list, sorted in xItemValue order.
 
@@ -178,9 +178,9 @@ const TickType_t xValueOfInsertion = pxNewListItem->xItemValue;
 
 UBaseType_t uxListRemove( ListItem_t * const pxItemToRemove )
 {
-/* The list item knows which list it is in.  Obtain the list from the list
-item. */
-List_t * const pxList = ( List_t * ) pxItemToRemove->pvContainer;
+	/* The list item knows which list it is in.  Obtain the list from the list
+	item. */
+	List_t * const pxList = ( List_t * ) pxItemToRemove->pvContainer;
 
 	pxItemToRemove->pxNext->pxPrevious = pxItemToRemove->pxPrevious;
 	pxItemToRemove->pxPrevious->pxNext = pxItemToRemove->pxNext;

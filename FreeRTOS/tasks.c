@@ -1406,7 +1406,7 @@ TCB_t * pxNewTCB;
 
 void vTaskStartScheduler( void )
 {
-BaseType_t xReturn;
+	BaseType_t xReturn;
 
 	/* Add the idle task at the lowest priority. */
 	#if ( INCLUDE_xTaskGetIdleTaskHandle == 1 )
@@ -1507,7 +1507,7 @@ void vTaskSuspendAll( void )
 
 	static TickType_t prvGetExpectedIdleTime( void )
 	{
-	TickType_t xReturn;
+		TickType_t xReturn;
 
 		if( pxCurrentTCB->uxPriority > tskIDLE_PRIORITY )
 		{
@@ -1533,8 +1533,8 @@ void vTaskSuspendAll( void )
 
 BaseType_t xTaskResumeAll( void )
 {
-TCB_t *pxTCB;
-BaseType_t xAlreadyYielded = pdFALSE;
+	TCB_t *pxTCB;
+	BaseType_t xAlreadyYielded = pdFALSE;
 
 	/* If uxSchedulerSuspended is zero then this function does not match a
 	previous call to vTaskSuspendAll(). */
@@ -1626,7 +1626,7 @@ BaseType_t xAlreadyYielded = pdFALSE;
 
 TickType_t xTaskGetTickCount( void )
 {
-TickType_t xTicks;
+	TickType_t xTicks;
 
 	/* Critical section required if running on a 16 bit processor. */
 	taskENTER_CRITICAL();
@@ -1641,8 +1641,8 @@ TickType_t xTicks;
 
 TickType_t xTaskGetTickCountFromISR( void )
 {
-TickType_t xReturn;
-UBaseType_t uxSavedInterruptStatus;
+	TickType_t xReturn;
+	UBaseType_t uxSavedInterruptStatus;
 
 	/* RTOS ports that support interrupt nesting have the concept of a maximum
 	system call (or maximum API call) interrupt priority.  Interrupts that are
@@ -1682,7 +1682,7 @@ UBaseType_t uxTaskGetNumberOfTasks( void )
 
 	char *pcTaskGetTaskName( TaskHandle_t xTaskToQuery )
 	{
-	TCB_t *pxTCB;
+		TCB_t *pxTCB;
 
 		/* If null is passed in here then the name of the calling task is being queried. */
 		pxTCB = prvGetTCBFromHandle( xTaskToQuery );
@@ -1697,7 +1697,7 @@ UBaseType_t uxTaskGetNumberOfTasks( void )
 
 	UBaseType_t uxTaskGetSystemState( TaskStatus_t * const pxTaskStatusArray, const UBaseType_t uxArraySize, uint32_t * const pulTotalRunTime )
 	{
-	UBaseType_t uxTask = 0, uxQueue = configMAX_PRIORITIES;
+		UBaseType_t uxTask = 0, uxQueue = configMAX_PRIORITIES;
 
 		vTaskSuspendAll();
 		{
@@ -1801,9 +1801,9 @@ implementations require configUSE_TICKLESS_IDLE to be set to a value other than
 
 BaseType_t xTaskIncrementTick( void )
 {
-TCB_t * pxTCB;
-TickType_t xItemValue;
-BaseType_t xSwitchRequired = pdFALSE;
+	TCB_t * pxTCB;
+	TickType_t xItemValue;
+	BaseType_t xSwitchRequired = pdFALSE;
 
 	/* Called by the portable layer each time a tick interrupt occurs.
 	Increments the tick then checks to see if the new tick value will cause any
@@ -1977,7 +1977,7 @@ BaseType_t xSwitchRequired = pdFALSE;
 
 	void vTaskSetApplicationTaskTag( TaskHandle_t xTask, TaskHookFunction_t pxHookFunction )
 	{
-	TCB_t *xTCB;
+		TCB_t *xTCB;
 
 		/* If xTask is NULL then it is the task hook of the calling task that is
 		getting set. */
@@ -2004,8 +2004,8 @@ BaseType_t xSwitchRequired = pdFALSE;
 
 	TaskHookFunction_t xTaskGetApplicationTaskTag( TaskHandle_t xTask )
 	{
-	TCB_t *xTCB;
-	TaskHookFunction_t xReturn;
+		TCB_t *xTCB;
+		TaskHookFunction_t xReturn;
 
 		/* If xTask is NULL then we are setting our own task hook. */
 		if( xTask == NULL )
@@ -2035,8 +2035,8 @@ BaseType_t xSwitchRequired = pdFALSE;
 
 	BaseType_t xTaskCallApplicationTaskHook( TaskHandle_t xTask, void *pvParameter )
 	{
-	TCB_t *xTCB;
-	BaseType_t xReturn;
+		TCB_t *xTCB;
+		BaseType_t xReturn;
 
 		/* If xTask is NULL then we are calling our own task hook. */
 		if( xTask == NULL )
@@ -2123,7 +2123,7 @@ void vTaskSwitchContext( void )
 
 void vTaskPlaceOnEventList( List_t * const pxEventList, const TickType_t xTicksToWait )
 {
-TickType_t xTimeToWake;
+	TickType_t xTimeToWake;
 
 	configASSERT( pxEventList );
 
@@ -2182,7 +2182,7 @@ TickType_t xTimeToWake;
 
 void vTaskPlaceOnUnorderedEventList( List_t * pxEventList, const TickType_t xItemValue, const TickType_t xTicksToWait )
 {
-TickType_t xTimeToWake;
+	TickType_t xTimeToWake;
 
 	configASSERT( pxEventList );
 
@@ -2250,7 +2250,7 @@ TickType_t xTimeToWake;
 
 	void vTaskPlaceOnEventListRestricted( List_t * const pxEventList, const TickType_t xTicksToWait )
 	{
-	TickType_t xTimeToWake;
+		TickType_t xTimeToWake;
 
 		configASSERT( pxEventList );
 
@@ -2293,8 +2293,8 @@ TickType_t xTimeToWake;
 
 BaseType_t xTaskRemoveFromEventList( const List_t * const pxEventList )
 {
-TCB_t *pxUnblockedTCB;
-BaseType_t xReturn;
+	TCB_t *pxUnblockedTCB;
+	BaseType_t xReturn;
 
 	/* THIS FUNCTION MUST BE CALLED FROM A CRITICAL SECTION.  It can also be
 	called from a critical section within an ISR. */
@@ -2347,8 +2347,8 @@ BaseType_t xReturn;
 
 BaseType_t xTaskRemoveFromUnorderedEventList( ListItem_t * pxEventListItem, const TickType_t xItemValue )
 {
-TCB_t *pxUnblockedTCB;
-BaseType_t xReturn;
+	TCB_t *pxUnblockedTCB;
+	BaseType_t xReturn;
 
 	/* THIS FUNCTION MUST BE CALLED WITH THE SCHEDULER SUSPENDED.  It is used by
 	the event flags implementation. */
@@ -2400,7 +2400,7 @@ void vTaskSetTimeOutState( TimeOut_t * const pxTimeOut )
 
 BaseType_t xTaskCheckForTimeOut( TimeOut_t * const pxTimeOut, TickType_t * const pxTicksToWait )
 {
-BaseType_t xReturn;
+	BaseType_t xReturn;
 
 	configASSERT( pxTimeOut );
 	configASSERT( pxTicksToWait );
@@ -2457,8 +2457,8 @@ void vTaskMissedYield( void )
 
 	UBaseType_t uxTaskGetTaskNumber( TaskHandle_t xTask )
 	{
-	UBaseType_t uxReturn;
-	TCB_t *pxTCB;
+		UBaseType_t uxReturn;
+		TCB_t *pxTCB;
 
 		if( xTask != NULL )
 		{
@@ -2563,7 +2563,7 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
 		configUSE_TICKLESS_IDLE to be set to a value other than 1. */
 		#if ( configUSE_TICKLESS_IDLE != 0 )
 		{
-		TickType_t xExpectedIdleTime;
+			TickType_t xExpectedIdleTime;
 
 			/* It is not desirable to suspend then resume the scheduler on
 			each iteration of the idle task.  Therefore, a preliminary
@@ -2609,7 +2609,7 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
 
 	eSleepModeStatus eTaskConfirmSleepModeStatus( void )
 	{
-	eSleepModeStatus eReturn = eStandardSleep;
+		eSleepModeStatus eReturn = eStandardSleep;
 
 		if( listCURRENT_LIST_LENGTH( &xPendingReadyList ) != 0 )
 		{
@@ -2651,7 +2651,7 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
 
 static void prvInitialiseTCBVariables( TCB_t * const pxTCB, const char * const pcName, UBaseType_t uxPriority, const MemoryRegion_t * const xRegions, const uint16_t usStackDepth ) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 {
-UBaseType_t x;
+	UBaseType_t x;
 
 	/* Store the task name in the TCB. */
 	for( x = ( UBaseType_t ) 0; x < ( UBaseType_t ) configMAX_TASK_NAME_LEN; x++ )
@@ -2746,12 +2746,12 @@ UBaseType_t x;
 
 	void vTaskAllocateMPURegions( TaskHandle_t xTaskToModify, const MemoryRegion_t * const xRegions )
 	{
-	TCB_t *pxTCB;
+		TCB_t *pxTCB;
 
 		/* If null is passed in here then we are deleting ourselves. */
 		pxTCB = prvGetTCBFromHandle( xTaskToModify );
 
-        vPortStoreTaskMPUSettings( &( pxTCB->xMPUSettings ), xRegions, NULL, 0 );
+		vPortStoreTaskMPUSettings( &( pxTCB->xMPUSettings ), xRegions, NULL, 0 );
 	}
 
 #endif /* portUSING_MPU_WRAPPERS */
@@ -2759,7 +2759,7 @@ UBaseType_t x;
 
 static void prvInitialiseTaskLists( void )
 {
-UBaseType_t uxPriority;
+	UBaseType_t uxPriority;
 
 	for( uxPriority = ( UBaseType_t ) 0U; uxPriority < ( UBaseType_t ) configMAX_PRIORITIES; uxPriority++ )
 	{
@@ -2862,7 +2862,7 @@ static void prvAddCurrentTaskToDelayedList( const TickType_t xTimeToWake )
 
 static TCB_t *prvAllocateTCBAndStack( const uint16_t usStackDepth, StackType_t * const puxStackBuffer )
 {
-TCB_t *pxNewTCB;
+	TCB_t *pxNewTCB;
 
 	/* Allocate space for the TCB.  Where the memory comes from depends on
 	the implementation of the port malloc function. */
@@ -2901,8 +2901,8 @@ TCB_t *pxNewTCB;
 
 	static UBaseType_t prvListTaskWithinSingleList( TaskStatus_t *pxTaskStatusArray, List_t *pxList, eTaskState eState )
 	{
-	volatile TCB_t *pxNextTCB, *pxFirstTCB;
-	UBaseType_t uxTask = 0;
+		volatile TCB_t *pxNextTCB, *pxFirstTCB;
+		UBaseType_t uxTask = 0;
 
 		if( listCURRENT_LIST_LENGTH( pxList ) > ( UBaseType_t ) 0 )
 		{
@@ -2986,7 +2986,7 @@ TCB_t *pxNewTCB;
 
 	static uint16_t prvTaskCheckFreeStackSpace( const uint8_t * pucStackByte )
 	{
-	uint32_t ulCount = 0U;
+		uint32_t ulCount = 0U;
 
 		while( *pucStackByte == tskSTACK_FILL_BYTE )
 		{
@@ -3006,9 +3006,9 @@ TCB_t *pxNewTCB;
 
 	UBaseType_t uxTaskGetStackHighWaterMark( TaskHandle_t xTask )
 	{
-	TCB_t *pxTCB;
-	uint8_t *pucEndOfStack;
-	UBaseType_t uxReturn;
+		TCB_t *pxTCB;
+		uint8_t *pucEndOfStack;
+		UBaseType_t uxReturn;
 
 		pxTCB = prvGetTCBFromHandle( xTask );
 
@@ -3050,7 +3050,7 @@ TCB_t *pxNewTCB;
 
 static void prvResetNextTaskUnblockTime( void )
 {
-TCB_t *pxTCB;
+	TCB_t *pxTCB;
 
 	if( listLIST_IS_EMPTY( pxDelayedTaskList ) != pdFALSE )
 	{
@@ -3077,7 +3077,7 @@ TCB_t *pxTCB;
 
 	TaskHandle_t xTaskGetCurrentTaskHandle( void )
 	{
-	TaskHandle_t xReturn;
+		TaskHandle_t xReturn;
 
 		/* A critical section is not required as this is not called from
 		an interrupt and the current TCB will always be the same for any
@@ -3094,7 +3094,7 @@ TCB_t *pxTCB;
 
 	BaseType_t xTaskGetSchedulerState( void )
 	{
-	BaseType_t xReturn;
+		BaseType_t xReturn;
 
 		if( xSchedulerRunning == pdFALSE )
 		{
@@ -3122,7 +3122,7 @@ TCB_t *pxTCB;
 
 	void vTaskPriorityInherit( TaskHandle_t const pxMutexHolder )
 	{
-	TCB_t * const pxTCB = ( TCB_t * ) pxMutexHolder;
+		TCB_t * const pxTCB = ( TCB_t * ) pxMutexHolder;
 
 		/* If the mutex was given back by an interrupt while the queue was
 		locked then the mutex holder might now be NULL. */
@@ -3185,7 +3185,7 @@ TCB_t *pxTCB;
 
 	void vTaskPriorityDisinherit( TaskHandle_t const pxMutexHolder )
 	{
-	TCB_t * const pxTCB = ( TCB_t * ) pxMutexHolder;
+		TCB_t * const pxTCB = ( TCB_t * ) pxMutexHolder;
 
 		if( pxMutexHolder != NULL )
 		{
@@ -3289,9 +3289,9 @@ TCB_t *pxTCB;
 
 	void vTaskList( char * pcWriteBuffer )
 	{
-	TaskStatus_t *pxTaskStatusArray;
-	volatile UBaseType_t uxArraySize, x;
-	char cStatus;
+		TaskStatus_t *pxTaskStatusArray;
+		volatile UBaseType_t uxArraySize, x;
+		char cStatus;
 
 		/*
 		 * PLEASE NOTE:
@@ -3376,9 +3376,9 @@ TCB_t *pxTCB;
 
 	void vTaskGetRunTimeStats( char *pcWriteBuffer )
 	{
-	TaskStatus_t *pxTaskStatusArray;
-	volatile UBaseType_t uxArraySize, x;
-	uint32_t ulTotalTime, ulStatsAsPercentage;
+		TaskStatus_t *pxTaskStatusArray;
+		volatile UBaseType_t uxArraySize, x;
+		uint32_t ulTotalTime, ulStatsAsPercentage;
 
 		#if( configUSE_TRACE_FACILITY != 1 )
 		{
@@ -3493,7 +3493,7 @@ TCB_t *pxTCB;
 
 TickType_t uxTaskResetEventItemValue( void )
 {
-TickType_t uxReturn;
+	TickType_t uxReturn;
 
 	uxReturn = listGET_LIST_ITEM_VALUE( &( pxCurrentTCB->xEventListItem ) );
 

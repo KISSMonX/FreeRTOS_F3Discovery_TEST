@@ -136,24 +136,21 @@ static void prvCheckDelayedList( void );
 
 BaseType_t xCoRoutineCreate( crCOROUTINE_CODE pxCoRoutineCode, UBaseType_t uxPriority, UBaseType_t uxIndex )
 {
-BaseType_t xReturn;
-CRCB_t *pxCoRoutine;
+	BaseType_t xReturn;
+	CRCB_t *pxCoRoutine;
 
 	/* Allocate the memory that will store the co-routine control block. */
 	pxCoRoutine = ( CRCB_t * ) pvPortMalloc( sizeof( CRCB_t ) );
-	if( pxCoRoutine )
-	{
+	if( pxCoRoutine ) {
 		/* If pxCurrentCoRoutine is NULL then this is the first co-routine to
 		be created and the co-routine data structures need initialising. */
-		if( pxCurrentCoRoutine == NULL )
-		{
+		if( pxCurrentCoRoutine == NULL ) {
 			pxCurrentCoRoutine = pxCoRoutine;
 			prvInitialiseCoRoutineLists();
 		}
 
 		/* Check the priority is within limits. */
-		if( uxPriority >= configMAX_CO_ROUTINE_PRIORITIES )
-		{
+		if( uxPriority >= configMAX_CO_ROUTINE_PRIORITIES ) {
 			uxPriority = configMAX_CO_ROUTINE_PRIORITIES - 1;
 		}
 
@@ -182,8 +179,7 @@ CRCB_t *pxCoRoutine;
 
 		xReturn = pdPASS;
 	}
-	else
-	{
+	else {
 		xReturn = errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY;
 	}
 
@@ -193,7 +189,7 @@ CRCB_t *pxCoRoutine;
 
 void vCoRoutineAddToDelayedList( TickType_t xTicksToDelay, List_t *pxEventList )
 {
-TickType_t xTimeToWake;
+	TickType_t xTimeToWake;
 
 	/* Calculate the time to wake - this may overflow but this is
 	not a problem. */
@@ -207,21 +203,18 @@ TickType_t xTimeToWake;
 	/* The list item will be inserted in wake time order. */
 	listSET_LIST_ITEM_VALUE( &( pxCurrentCoRoutine->xGenericListItem ), xTimeToWake );
 
-	if( xTimeToWake < xCoRoutineTickCount )
-	{
+	if( xTimeToWake < xCoRoutineTickCount ) {
 		/* Wake time has overflowed.  Place this item in the
 		overflow list. */
 		vListInsert( ( List_t * ) pxOverflowDelayedCoRoutineList, ( ListItem_t * ) &( pxCurrentCoRoutine->xGenericListItem ) );
 	}
-	else
-	{
+	else {
 		/* The wake time has not overflowed, so we can use the
 		current block list. */
 		vListInsert( ( List_t * ) pxDelayedCoRoutineList, ( ListItem_t * ) &( pxCurrentCoRoutine->xGenericListItem ) );
 	}
 
-	if( pxEventList )
-	{
+	if( pxEventList ) {
 		/* Also add the co-routine to an event list.  If this is done then the
 		function must be called with interrupts disabled. */
 		vListInsert( pxEventList, &( pxCurrentCoRoutine->xEventListItem ) );
@@ -254,7 +247,7 @@ static void prvCheckPendingReadyList( void )
 
 static void prvCheckDelayedList( void )
 {
-CRCB_t *pxCRCB;
+	CRCB_t *pxCRCB;
 
 	xPassedTicks = xTaskGetTickCount() - xLastTickCount;
 	while( xPassedTicks )
@@ -263,8 +256,7 @@ CRCB_t *pxCRCB;
 		xPassedTicks--;
 
 		/* If the tick count has overflowed we need to swap the ready lists. */
-		if( xCoRoutineTickCount == 0 )
-		{
+		if( xCoRoutineTickCount == 0 ) {
 			List_t * pxTemp;
 
 			/* Tick count has overflowed so we need to swap the delay lists.  If there are
@@ -295,8 +287,7 @@ CRCB_t *pxCRCB;
 				uxListRemove( &( pxCRCB->xGenericListItem ) );
 
 				/* Is the co-routine waiting on an event also? */
-				if( pxCRCB->xEventListItem.pvContainer )
-				{
+				if( pxCRCB->xEventListItem.pvContainer ) {
 					( void ) uxListRemove( &( pxCRCB->xEventListItem ) );
 				}
 			}
@@ -321,8 +312,7 @@ void vCoRoutineSchedule( void )
 	/* Find the highest priority queue that contains ready co-routines. */
 	while( listLIST_IS_EMPTY( &( pxReadyCoRoutineLists[ uxTopCoRoutineReadyPriority ] ) ) )
 	{
-		if( uxTopCoRoutineReadyPriority == 0 )
-		{
+		if( uxTopCoRoutineReadyPriority == 0 ) {
 			/* No more co-routines to check. */
 			return;
 		}
@@ -342,7 +332,7 @@ void vCoRoutineSchedule( void )
 
 static void prvInitialiseCoRoutineLists( void )
 {
-UBaseType_t uxPriority;
+	UBaseType_t uxPriority;
 
 	for( uxPriority = 0; uxPriority < configMAX_CO_ROUTINE_PRIORITIES; uxPriority++ )
 	{
@@ -362,8 +352,8 @@ UBaseType_t uxPriority;
 
 BaseType_t xCoRoutineRemoveFromEventList( const List_t *pxEventList )
 {
-CRCB_t *pxUnblockedCRCB;
-BaseType_t xReturn;
+	CRCB_t *pxUnblockedCRCB;
+	BaseType_t xReturn;
 
 	/* This function is called from within an interrupt.  It can only access
 	event lists and the pending ready list.  This function assumes that a
@@ -372,12 +362,10 @@ BaseType_t xReturn;
 	( void ) uxListRemove( &( pxUnblockedCRCB->xEventListItem ) );
 	vListInsertEnd( ( List_t * ) &( xPendingReadyCoRoutineList ), &( pxUnblockedCRCB->xEventListItem ) );
 
-	if( pxUnblockedCRCB->uxPriority >= pxCurrentCoRoutine->uxPriority )
-	{
+	if( pxUnblockedCRCB->uxPriority >= pxCurrentCoRoutine->uxPriority ) {
 		xReturn = pdTRUE;
 	}
-	else
-	{
+	else {
 		xReturn = pdFALSE;
 	}
 
