@@ -269,8 +269,7 @@ void SPI_Init(SPI_TypeDef* SPIx, SPI_InitTypeDef* SPI_InitStruct)
         assert_param(IS_SPI_CRC_POLYNOMIAL(SPI_InitStruct->SPI_CRCPolynomial));
 
         /* Configuring the SPI in master mode */
-        if(SPI_InitStruct->SPI_Mode == SPI_Mode_Master)
-        {
+        if(SPI_InitStruct->SPI_Mode == SPI_Mode_Master) {
                 /*---------------------------- SPIx CR1 Configuration ------------------------*/
                 /* Get the SPIx CR1 value */
                 tmpreg = SPIx->CR1;
@@ -694,14 +693,13 @@ void I2S_FullDuplexConfig(SPI_TypeDef* I2Sxext, I2S_InitTypeDef* I2S_InitStruct)
         tmpreg = I2Sxext->I2SCFGR;
 
         /* Get the mode to be configured for the extended I2S */
-        if ((I2S_InitStruct->I2S_Mode == I2S_Mode_MasterTx) || (I2S_InitStruct->I2S_Mode == I2S_Mode_SlaveTx))
-        {
+        if ((I2S_InitStruct->I2S_Mode == I2S_Mode_MasterTx)
+		|| (I2S_InitStruct->I2S_Mode == I2S_Mode_SlaveTx)) {
                 tmp = I2S_Mode_SlaveRx;
         }
-        else
-        {
-                if ((I2S_InitStruct->I2S_Mode == I2S_Mode_MasterRx) || (I2S_InitStruct->I2S_Mode == I2S_Mode_SlaveRx))
-                {
+        else {
+                if ((I2S_InitStruct->I2S_Mode == I2S_Mode_MasterRx) 
+			|| (I2S_InitStruct->I2S_Mode == I2S_Mode_SlaveRx)) {
                         tmp = I2S_Mode_SlaveTx;
                 }
         }
@@ -730,13 +728,11 @@ void SPI_SSOutputCmd(SPI_TypeDef* SPIx, FunctionalState NewState)
         /* Check the parameters */
         assert_param(IS_SPI_ALL_PERIPH(SPIx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the selected SPI SS output */
                 SPIx->CR2 |= (uint16_t)SPI_CR2_SSOE;
         }
-        else
-        {
+        else {
                 /* Disable the selected SPI SS output */
                 SPIx->CR2 &= (uint16_t)~((uint16_t)SPI_CR2_SSOE);
         }
@@ -760,13 +756,11 @@ void SPI_NSSPulseModeCmd(SPI_TypeDef* SPIx, FunctionalState NewState)
         assert_param(IS_SPI_ALL_PERIPH(SPIx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the NSS pulse management mode */
                 SPIx->CR2 |= SPI_CR2_NSSP;
         }
-        else
-        {
+        else {
                 /* Disable the NSS pulse management mode */
                 SPIx->CR2 &= (uint16_t)~((uint16_t)SPI_CR2_NSSP);    
         }
@@ -963,13 +957,11 @@ void SPI_CalculateCRC(SPI_TypeDef* SPIx, FunctionalState NewState)
         assert_param(IS_SPI_ALL_PERIPH(SPIx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the selected SPI CRC calculation */
                 SPIx->CR1 |= SPI_CR1_CRCEN;
         }
-        else
-        {
+        else {
                 /* Disable the selected SPI CRC calculation */
                 SPIx->CR1 &= (uint16_t)~((uint16_t)SPI_CR1_CRCEN);
         }
@@ -1005,13 +997,11 @@ uint16_t SPI_GetCRC(SPI_TypeDef* SPIx, uint8_t SPI_CRC)
         assert_param(IS_SPI_ALL_PERIPH(SPIx));
         assert_param(IS_SPI_CRC(SPI_CRC));
 
-        if (SPI_CRC != SPI_CRC_Rx)
-        {
+        if (SPI_CRC != SPI_CRC_Rx) {
                 /* Get the Tx CRC register */
                 crcreg = SPIx->TXCRCR;
         }
-        else
-        {
+        else {
                 /* Get the Rx CRC register */
                 crcreg = SPIx->RXCRCR;
         }
@@ -1068,13 +1058,11 @@ void SPI_I2S_DMACmd(SPI_TypeDef* SPIx, uint16_t SPI_I2S_DMAReq, FunctionalState 
         assert_param(IS_FUNCTIONAL_STATE(NewState));
         assert_param(IS_SPI_I2S_DMA_REQ(SPI_I2S_DMAReq));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the selected SPI DMA requests */
                 SPIx->CR2 |= SPI_I2S_DMAReq;
         }
-        else
-        {
+        else {
                 /* Disable the selected SPI DMA requests */
                 SPIx->CR2 &= (uint16_t)~SPI_I2S_DMAReq;
         }
@@ -1212,13 +1200,11 @@ void SPI_I2S_ITConfig(SPI_TypeDef* SPIx, uint8_t SPI_I2S_IT, FunctionalState New
         /* Set the IT mask */
         itmask = (uint16_t)1 << (uint16_t)itpos;
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the selected SPI interrupt */
                 SPIx->CR2 |= itmask;
         }
-        else
-        {
+        else {
                 /* Disable the selected SPI interrupt */
                 SPIx->CR2 &= (uint16_t)~itmask;
         }

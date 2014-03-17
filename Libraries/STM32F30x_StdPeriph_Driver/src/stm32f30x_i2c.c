@@ -147,15 +147,13 @@ void I2C_DeInit(I2C_TypeDef* I2Cx)
         /* Check the parameters */
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
 
-        if (I2Cx == I2C1)
-        {
+        if (I2Cx == I2C1) {
                 /* Enable I2C1 reset state */
                 RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, ENABLE);
                 /* Release I2C1 from reset state */
                 RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, DISABLE);
         }
-        else
-        {
+        else {
                 /* Enable I2C2 reset state */
                 RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, ENABLE);
                 /* Release I2C2 from reset state */
@@ -281,13 +279,11 @@ void I2C_Cmd(I2C_TypeDef* I2Cx, FunctionalState NewState)
         /* Check the parameters */
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the selected I2C peripheral */
                 I2Cx->CR1 |= I2C_CR1_PE;
         }
-        else
-        {
+        else {
                 /* Disable the selected I2C peripheral */
                 I2Cx->CR1 &= (uint32_t)~((uint32_t)I2C_CR1_PE);
         }
@@ -338,13 +334,11 @@ void I2C_ITConfig(I2C_TypeDef* I2Cx, uint32_t I2C_IT, FunctionalState NewState)
         assert_param(IS_FUNCTIONAL_STATE(NewState));
         assert_param(IS_I2C_CONFIG_IT(I2C_IT));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the selected I2C interrupts */
                 I2Cx->CR1 |= I2C_IT;
         }
-        else
-        {
+        else {
                 /* Disable the selected I2C interrupts */
                 I2Cx->CR1 &= (uint32_t)~((uint32_t)I2C_IT);
         }
