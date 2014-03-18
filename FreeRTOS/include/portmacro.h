@@ -113,7 +113,7 @@ typedef unsigned long UBaseType_t;
 extern void vPortYield( void );
 #define portNVIC_INT_CTRL_REG		( * ( ( volatile uint32_t * ) 0xe000ed04 ) )
 #define portNVIC_PENDSVSET_BIT		( 1UL << 28UL )
-#define portYIELD()					vPortYield()
+#define portYIELD()			vPortYield()
 #define portEND_SWITCHING_ISR( xSwitchRequired ) if( xSwitchRequired ) portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT
 #define portYIELD_FROM_ISR( x ) portEND_SWITCHING_ISR( x )
 /*-----------------------------------------------------------*/
@@ -124,11 +124,11 @@ extern void vPortClearInterruptMask( uint32_t ulNewMask );
 extern void vPortEnterCritical( void );
 extern void vPortExitCritical( void );
 
-#define portDISABLE_INTERRUPTS()				ulPortSetInterruptMask()
-#define portENABLE_INTERRUPTS()					vPortClearInterruptMask( 0 )
-#define portENTER_CRITICAL()					vPortEnterCritical()
-#define portEXIT_CRITICAL()						vPortExitCritical()
-#define portSET_INTERRUPT_MASK_FROM_ISR()		ulPortSetInterruptMask()
+#define portDISABLE_INTERRUPTS()		ulPortSetInterruptMask()
+#define portENABLE_INTERRUPTS()			vPortClearInterruptMask( 0 )
+#define portENTER_CRITICAL()			vPortEnterCritical()
+#define portEXIT_CRITICAL()			vPortExitCritical()
+#define portSET_INTERRUPT_MASK_FROM_ISR()	ulPortSetInterruptMask()
 #define portCLEAR_INTERRUPT_MASK_FROM_ISR(x)	vPortClearInterruptMask(x)
 
 /*-----------------------------------------------------------*/
