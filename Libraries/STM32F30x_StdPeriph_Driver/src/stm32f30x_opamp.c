@@ -274,13 +274,11 @@ void OPAMP_VrefConnectNonInvertingInput(uint32_t OPAMP_Selection, FunctionalStat
         assert_param(IS_OPAMP_ALL_PERIPH(OPAMP_Selection));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Connnect the internal reference to the OPAMP's non inverting input */
                 *(__IO uint32_t *) (OPAMP_BASE + OPAMP_Selection) |= (uint32_t) (OPAMP_CSR_FORCEVP);
         }
-        else
-        {
+        else {
                 /* Disconnnect the internal reference to the OPAMP's non inverting input */
                 *(__IO uint32_t *) (OPAMP_BASE + OPAMP_Selection) &= (uint32_t)(~OPAMP_CSR_FORCEVP);
         }
@@ -300,13 +298,11 @@ void OPAMP_VrefConnectADCCmd(uint32_t OPAMP_Selection, FunctionalState NewState)
         assert_param(IS_OPAMP_ALL_PERIPH(OPAMP_Selection));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable output internal reference */
                 *(__IO uint32_t *) (OPAMP_BASE + OPAMP_Selection) |= (uint32_t) (OPAMP_CSR_TSTREF);
         }
-        else
-        {
+        else {
                 /* Disable output internal reference */
                 *(__IO uint32_t *) (OPAMP_BASE + OPAMP_Selection) &= (uint32_t)(~OPAMP_CSR_TSTREF);
         }
@@ -367,13 +363,11 @@ void OPAMP_TimerControlledMuxCmd(uint32_t OPAMP_Selection, FunctionalState NewSt
         assert_param(IS_OPAMP_ALL_PERIPH(OPAMP_Selection));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the timer-controlled Mux mode */
                 *(__IO uint32_t *) (OPAMP_BASE + OPAMP_Selection) |= (uint32_t) (OPAMP_CSR_TCMEN);
         }
-        else
-        {
+        else {
                 /* Disable the timer-controlled Mux mode */
                 *(__IO uint32_t *) (OPAMP_BASE + OPAMP_Selection) &= (uint32_t)(~OPAMP_CSR_TCMEN);
         }
@@ -396,13 +390,11 @@ void OPAMP_Cmd(uint32_t OPAMP_Selection, FunctionalState NewState)
         assert_param(IS_OPAMP_ALL_PERIPH(OPAMP_Selection));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the selected OPAMPx peripheral */
                 *(__IO uint32_t *) (OPAMP_BASE + OPAMP_Selection) |= (uint32_t) (OPAMP_CSR_OPAMPxEN);
         }
-        else
-        {
+        else {
                 /* Disable the selected OPAMPx peripheral */
                 *(__IO uint32_t *) (OPAMP_BASE + OPAMP_Selection) &= (uint32_t)(~OPAMP_CSR_OPAMPxEN);
         }
@@ -429,12 +421,10 @@ uint32_t OPAMP_GetOutputLevel(uint32_t OPAMP_Selection)
         assert_param(IS_OPAMP_ALL_PERIPH(OPAMP_Selection));
 
         /* Check if selected OPAMP output is high */
-        if ((*(__IO uint32_t *) (OPAMP_BASE + OPAMP_Selection) & (OPAMP_CSR_OUTCAL)) != 0)
-        {
+        if ((*(__IO uint32_t *) (OPAMP_BASE + OPAMP_Selection) & (OPAMP_CSR_OUTCAL)) != 0) {
                 opampout = OPAMP_OutputLevel_High;
         }
-        else
-        {
+        else {
                 opampout = OPAMP_OutputLevel_Low;
         }
 
@@ -520,8 +510,7 @@ void OPAMP_StartCalibration(uint32_t OPAMP_Selection, FunctionalState NewState)
         assert_param(IS_OPAMP_ALL_PERIPH(OPAMP_Selection));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Start the OPAMPx calibration */
                 *(__IO uint32_t *) (OPAMP_BASE + OPAMP_Selection) |= (uint32_t) (OPAMP_CSR_CALON);
         }

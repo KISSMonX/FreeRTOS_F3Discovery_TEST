@@ -1,3 +1,6 @@
+/*-----------------------------------------------------------
+ * Implementation of functions defined in portable.h for the ARM CM4F port.
+ *----------------------------------------------------------*/
 
 /* Scheduler includes. */
 #include "FreeRTOS.h"
@@ -31,48 +34,48 @@ is defined. */
 #endif
 
 /* Constants required to manipulate the core.  Registers first... */
-#define portNVIC_SYSTICK_CTRL_REG			( * ( ( volatile uint32_t * ) 0xe000e010 ) )
-#define portNVIC_SYSTICK_LOAD_REG			( * ( ( volatile uint32_t * ) 0xe000e014 ) )
+#define portNVIC_SYSTICK_CTRL_REG		( * ( ( volatile uint32_t * ) 0xe000e010 ) )
+#define portNVIC_SYSTICK_LOAD_REG		( * ( ( volatile uint32_t * ) 0xe000e014 ) )
 #define portNVIC_SYSTICK_CURRENT_VALUE_REG	( * ( ( volatile uint32_t * ) 0xe000e018 ) )
-#define portNVIC_SYSPRI2_REG				( * ( ( volatile uint32_t * ) 0xe000ed20 ) )
+#define portNVIC_SYSPRI2_REG			( * ( ( volatile uint32_t * ) 0xe000ed20 ) )
 /* ...then bits in the registers. */
-#define portNVIC_SYSTICK_INT_BIT			( 1UL << 1UL )
-#define portNVIC_SYSTICK_ENABLE_BIT			( 1UL << 0UL )
+#define portNVIC_SYSTICK_INT_BIT		( 1UL << 1UL )
+#define portNVIC_SYSTICK_ENABLE_BIT		( 1UL << 0UL )
 #define portNVIC_SYSTICK_COUNT_FLAG_BIT		( 1UL << 16UL )
-#define portNVIC_PENDSVCLEAR_BIT 			( 1UL << 27UL )
+#define portNVIC_PENDSVCLEAR_BIT 		( 1UL << 27UL )
 #define portNVIC_PEND_SYSTICK_CLEAR_BIT		( 1UL << 25UL )
 
-#define portNVIC_PENDSV_PRI					( ( ( uint32_t ) configKERNEL_INTERRUPT_PRIORITY ) << 16UL )
-#define portNVIC_SYSTICK_PRI				( ( ( uint32_t ) configKERNEL_INTERRUPT_PRIORITY ) << 24UL )
+#define portNVIC_PENDSV_PRI			( ( ( uint32_t ) configKERNEL_INTERRUPT_PRIORITY ) << 16UL )
+#define portNVIC_SYSTICK_PRI			( ( ( uint32_t ) configKERNEL_INTERRUPT_PRIORITY ) << 24UL )
 
 /* Constants required to check the validity of an interrupt priority. */
 #define portFIRST_USER_INTERRUPT_NUMBER		( 16 )
 #define portNVIC_IP_REGISTERS_OFFSET_16 	( 0xE000E3F0 )
-#define portAIRCR_REG						( * ( ( volatile uint32_t * ) 0xE000ED0C ) )
-#define portMAX_8_BIT_VALUE					( ( uint8_t ) 0xff )
-#define portTOP_BIT_OF_BYTE					( ( uint8_t ) 0x80 )
-#define portMAX_PRIGROUP_BITS				( ( uint8_t ) 7 )
-#define portPRIORITY_GROUP_MASK				( 0x07UL << 8UL )
-#define portPRIGROUP_SHIFT					( 8UL )
+#define portAIRCR_REG				( * ( ( volatile uint32_t * ) 0xE000ED0C ) )
+#define portMAX_8_BIT_VALUE			( ( uint8_t ) 0xff )
+#define portTOP_BIT_OF_BYTE			( ( uint8_t ) 0x80 )
+#define portMAX_PRIGROUP_BITS			( ( uint8_t ) 7 )
+#define portPRIORITY_GROUP_MASK			( 0x07UL << 8UL )
+#define portPRIGROUP_SHIFT			( 8UL )
 
 /* Constants required to manipulate the VFP. */
-#define portFPCCR					( ( volatile uint32_t * ) 0xe000ef34 ) /* Floating point context control register. */
-#define portASPEN_AND_LSPEN_BITS	( 0x3UL << 30UL )
+#define portFPCCR				( ( volatile uint32_t * ) 0xe000ef34 ) /* Floating point context control register. */
+#define portASPEN_AND_LSPEN_BITS		( 0x3UL << 30UL )
 
 /* Constants required to set up the initial stack. */
 #define portINITIAL_XPSR			( 0x01000000 )
-#define portINITIAL_EXEC_RETURN		( 0xfffffffd )
+#define portINITIAL_EXEC_RETURN			( 0xfffffffd )
 
 /* Constants used with memory barrier intrinsics. */
-#define portSY_FULL_READ_WRITE		( 15 )
+#define portSY_FULL_READ_WRITE			( 15 )
 
 /* The systick is a 24-bit counter. */
-#define portMAX_24_BIT_NUMBER				( 0xffffffUL )
+#define portMAX_24_BIT_NUMBER			( 0xffffffUL )
 
 /* A fiddle factor to estimate the number of SysTick counts that would have
 occurred while the SysTick counter is stopped during tickless idle
 calculations. */
-#define portMISSED_COUNTS_FACTOR			( 45UL )
+#define portMISSED_COUNTS_FACTOR		( 45UL )
 
 /* Each task maintains its own interrupt status in the critical nesting
 variable. */
@@ -228,7 +231,7 @@ __asm void prvStartFirstTask( void )
 	svc 0
 	nop
 }
-/*-----------------------------------------------------------*/
+
 
 __asm void prvEnableVFP( void )
 {
@@ -418,7 +421,7 @@ __asm void xPortPendSVHandler( void )
 
 	bx r14
 	nop
-	nop	/* 增加一条 nop 指令去除 warning: A1581W: Added 2 bytes of padding at address 0xa2*/
+	nop
 }
 
 

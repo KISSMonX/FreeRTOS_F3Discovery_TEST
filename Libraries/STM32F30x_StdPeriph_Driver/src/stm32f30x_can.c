@@ -594,41 +594,39 @@ uint8_t CAN_TransmitStatus(CAN_TypeDef* CANx, uint8_t TransmitMailbox)
         assert_param(IS_CAN_ALL_PERIPH(CANx));
         assert_param(IS_CAN_TRANSMITMAILBOX(TransmitMailbox));
 
-        switch (TransmitMailbox)
-        {
-                case (CAN_TXMAILBOX_0): 
-                        state =   CANx->TSR &  (CAN_TSR_RQCP0 | CAN_TSR_TXOK0 | CAN_TSR_TME0);
-                        break;
-                case (CAN_TXMAILBOX_1): 
-                        state =   CANx->TSR &  (CAN_TSR_RQCP1 | CAN_TSR_TXOK1 | CAN_TSR_TME1);
-                        break;
-                case (CAN_TXMAILBOX_2): 
-                        state =   CANx->TSR &  (CAN_TSR_RQCP2 | CAN_TSR_TXOK2 | CAN_TSR_TME2);
-                        break;
-                default:
-                        state = CAN_TxStatus_Failed;
-                        break;
+        switch (TransmitMailbox) {
+	case (CAN_TXMAILBOX_0): 
+		state =   CANx->TSR &  (CAN_TSR_RQCP0 | CAN_TSR_TXOK0 | CAN_TSR_TME0);
+		break;
+	case (CAN_TXMAILBOX_1): 
+		state =   CANx->TSR &  (CAN_TSR_RQCP1 | CAN_TSR_TXOK1 | CAN_TSR_TME1);
+		break;
+	case (CAN_TXMAILBOX_2): 
+		state =   CANx->TSR &  (CAN_TSR_RQCP2 | CAN_TSR_TXOK2 | CAN_TSR_TME2);
+		break;
+	default:
+		state = CAN_TxStatus_Failed;
+		break;
         }
-        switch (state)
-        {
-                /* transmit pending  */
-                case (0x0): state = CAN_TxStatus_Pending;
-                            break;
-                            /* transmit failed  */
-                case (CAN_TSR_RQCP0 | CAN_TSR_TME0): state = CAN_TxStatus_Failed;
-                                                     break;
-                case (CAN_TSR_RQCP1 | CAN_TSR_TME1): state = CAN_TxStatus_Failed;
-                                                     break;
-                case (CAN_TSR_RQCP2 | CAN_TSR_TME2): state = CAN_TxStatus_Failed;
-                                                     break;
-                                                     /* transmit succeeded  */
-                case (CAN_TSR_RQCP0 | CAN_TSR_TXOK0 | CAN_TSR_TME0):state = CAN_TxStatus_Ok;
-                                                                    break;
-                case (CAN_TSR_RQCP1 | CAN_TSR_TXOK1 | CAN_TSR_TME1):state = CAN_TxStatus_Ok;
-                                                                    break;
-                case (CAN_TSR_RQCP2 | CAN_TSR_TXOK2 | CAN_TSR_TME2):state = CAN_TxStatus_Ok;
-                                                                    break;
-                default: state = CAN_TxStatus_Failed;
+        switch (state) {
+	/* transmit pending  */
+	case (0x0): state = CAN_TxStatus_Pending;
+		    break;
+		    /* transmit failed  */
+	case (CAN_TSR_RQCP0 | CAN_TSR_TME0): state = CAN_TxStatus_Failed;
+					     break;
+	case (CAN_TSR_RQCP1 | CAN_TSR_TME1): state = CAN_TxStatus_Failed;
+					     break;
+	case (CAN_TSR_RQCP2 | CAN_TSR_TME2): state = CAN_TxStatus_Failed;
+					     break;
+					     /* transmit succeeded  */
+	case (CAN_TSR_RQCP0 | CAN_TSR_TXOK0 | CAN_TSR_TME0):state = CAN_TxStatus_Ok;
+							    break;
+	case (CAN_TSR_RQCP1 | CAN_TSR_TXOK1 | CAN_TSR_TME1):state = CAN_TxStatus_Ok;
+							    break;
+	case (CAN_TSR_RQCP2 | CAN_TSR_TXOK2 | CAN_TSR_TME2):state = CAN_TxStatus_Ok;
+							    break;
+	default: state = CAN_TxStatus_Failed;
                          break;
         }
         return (uint8_t) state;
@@ -1207,22 +1205,18 @@ FlagStatus CAN_GetFlagStatus(CAN_TypeDef* CANx, uint32_t CAN_FLAG)
 	assert_param(IS_CAN_GET_FLAG(CAN_FLAG));
 
 
-	 if((CAN_FLAG & CAN_FLAGS_ESR) != (uint32_t)RESET)
-	 { 
+	 if((CAN_FLAG & CAN_FLAGS_ESR) != (uint32_t)RESET) { 
 		 /* Check the status of the specified CAN flag */
-		 if ((CANx->ESR & (CAN_FLAG & 0x000FFFFF)) != (uint32_t)RESET)
-		 { 
+		 if ((CANx->ESR & (CAN_FLAG & 0x000FFFFF)) != (uint32_t)RESET) { 
 			 /* CAN_FLAG is set */
 			 bitstatus = SET;
 		 }
-		 else
-		 { 
+		 else { 
 			 /* CAN_FLAG is reset */
 			 bitstatus = RESET;
 		 }
 	 }
-	 else if((CAN_FLAG & CAN_FLAGS_MSR) != (uint32_t)RESET)
-	 { 
+	 else if((CAN_FLAG & CAN_FLAGS_MSR) != (uint32_t)RESET) { 
 		 /* Check the status of the specified CAN flag */
 		 if ((CANx->MSR & (CAN_FLAG & 0x000FFFFF)) != (uint32_t)RESET) { 
 			 /* CAN_FLAG is set */
@@ -1233,8 +1227,7 @@ FlagStatus CAN_GetFlagStatus(CAN_TypeDef* CANx, uint32_t CAN_FLAG)
 			 bitstatus = RESET;
 		 }
 	 }
-	 else if((CAN_FLAG & CAN_FLAGS_TSR) != (uint32_t)RESET)
-	 { 
+	 else if((CAN_FLAG & CAN_FLAGS_TSR) != (uint32_t)RESET) { 
 		 /* Check the status of the specified CAN flag */
 		 if ((CANx->TSR & (CAN_FLAG & 0x000FFFFF)) != (uint32_t)RESET) { 
 			 /* CAN_FLAG is set */
@@ -1258,8 +1251,7 @@ FlagStatus CAN_GetFlagStatus(CAN_TypeDef* CANx, uint32_t CAN_FLAG)
 	 }
 	 else {/* If(CAN_FLAG & CAN_FLAGS_RF1R != (uint32_t)RESET) */
 		 /* Check the status of the specified CAN flag */
-		 if ((uint32_t)(CANx->RF1R & (CAN_FLAG & 0x000FFFFF)) != (uint32_t)RESET)
-		 { 
+		 if ((uint32_t)(CANx->RF1R & (CAN_FLAG & 0x000FFFFF)) != (uint32_t)RESET) { 
 			 /* CAN_FLAG is set */
 			 bitstatus = SET;
 		 }
@@ -1296,16 +1288,14 @@ void CAN_ClearFlag(CAN_TypeDef* CANx, uint32_t CAN_FLAG)
 	assert_param(IS_CAN_ALL_PERIPH(CANx));
 	assert_param(IS_CAN_CLEAR_FLAG(CAN_FLAG));
 
-	if (CAN_FLAG == CAN_FLAG_LEC) /* ESR register */
-	{
-	 /* Clear the selected CAN flags */
-	 CANx->ESR = (uint32_t)RESET;
+	if (CAN_FLAG == CAN_FLAG_LEC) { /* ESR register */
+		/* Clear the selected CAN flags */
+		CANx->ESR = (uint32_t)RESET;
 	}
 	else {/* MSR or TSR or RF0R or RF1R */
 		flagtmp = CAN_FLAG & 0x000FFFFF;
 
-		if ((CAN_FLAG & CAN_FLAGS_RF0R)!=(uint32_t)RESET)
-		{
+		if ((CAN_FLAG & CAN_FLAGS_RF0R)!=(uint32_t)RESET) {
 			 /* Receive Flags */
 			 CANx->RF0R = (uint32_t)(flagtmp);
 		}
@@ -1317,8 +1307,7 @@ void CAN_ClearFlag(CAN_TypeDef* CANx, uint32_t CAN_FLAG)
 			 /* Transmit Flags */
 			 CANx->TSR = (uint32_t)(flagtmp);
 		}
-		else /* If((CAN_FLAG & CAN_FLAGS_MSR)!=(uint32_t)RESET) */
-		{
+		else {   /* If((CAN_FLAG & CAN_FLAGS_MSR)!=(uint32_t)RESET) */
 			 /* Operating mode Flags */
 			 CANx->MSR = (uint32_t)(flagtmp);
 		}

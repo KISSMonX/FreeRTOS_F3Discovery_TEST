@@ -188,10 +188,13 @@ static __I uint16_t ADCPrescTable[13] = {0, 1, 2, 4, 6, 8, 10, 12, 16, 32, 64, 1
   */
 void RCC_DeInit(void)
 {
-        /* Set HSION bit */
+        /* Set HSION bit: HSI oscillator ON*/
         RCC->CR |= (uint32_t)0x00000001;
 
-        /* Reset SW[1:0], HPRE[3:0], PPRE[2:0] and MCOSEL[2:0] bits */
+        /* Reset SW[1:0], HPRE[3:0], PPRE[2:0] and MCOSEL[2:0] bits 
+	* SW[1:0] : HSI selected as system clock
+	* HPRE[3:0] : SYSCLK not divided
+	*/
         RCC->CFGR &= (uint32_t)0xF8FFC000;
 
         /* Reset HSEON, CSSON and PLLON bits */
@@ -265,18 +268,15 @@ ErrorStatus RCC_WaitForHSEStartUp(void)
         FlagStatus HSEStatus = RESET;
 
         /* Wait till HSE is ready and if timeout is reached exit */
-        do
-        {
+        do {
                 HSEStatus = RCC_GetFlagStatus(RCC_FLAG_HSERDY);
                 StartUpCounter++;  
         } while((StartUpCounter != HSE_STARTUP_TIMEOUT) && (HSEStatus == RESET));
 
-        if (RCC_GetFlagStatus(RCC_FLAG_HSERDY) != RESET)
-        {
+        if (RCC_GetFlagStatus(RCC_FLAG_HSERDY) != RESET) {
                 status = SUCCESS;
         }
-        else
-        {
+        else {
                 status = ERROR;
         }  
         return (status);
@@ -602,451 +602,416 @@ using the FLASH_GetPrefetchBufferStatus() function.
 * @{
         */
 
-                /**
-                 * @brief  Configures the system clock (SYSCLK).
-                 * @note     The HSI is used (enabled by hardware) as system clock source after
-                 *           startup from Reset, wake-up from STOP and STANDBY mode, or in case
-                 *           of failure of the HSE used directly or indirectly as system clock
-                 *           (if the Clock Security System CSS is enabled).
-                 * @note     A switch from one clock source to another occurs only if the target
-                 *           clock source is ready (clock stable after startup delay or PLL locked). 
-                 *           If a clock source which is not yet ready is selected, the switch will
-                 *           occur when the clock source will be ready. 
-                 *           You can use RCC_GetSYSCLKSource() function to know which clock is
-                 *           currently used as system clock source.  
-                 * @param  RCC_SYSCLKSource: specifies the clock source used as system clock source 
-                 *   This parameter can be one of the following values:
-                 *     @arg RCC_SYSCLKSource_HSI:    HSI selected as system clock source
-                 *     @arg RCC_SYSCLKSource_HSE:    HSE selected as system clock source
-                 *     @arg RCC_SYSCLKSource_PLLCLK: PLL selected as system clock source
-                 * @retval None
-                 */
-                void RCC_SYSCLKConfig(uint32_t RCC_SYSCLKSource)
-                {
-                        uint32_t tmpreg = 0;
+/**
+ * @brief  Configures the system clock (SYSCLK).
+ * @note     The HSI is used (enabled by hardware) as system clock source after
+ *           startup from Reset, wake-up from STOP and STANDBY mode, or in case
+ *           of failure of the HSE used directly or indirectly as system clock
+ *           (if the Clock Security System CSS is enabled).
+ * @note     A switch from one clock source to another occurs only if the target
+ *           clock source is ready (clock stable after startup delay or PLL locked). 
+ *           If a clock source which is not yet ready is selected, the switch will
+ *           occur when the clock source will be ready. 
+ *           You can use RCC_GetSYSCLKSource() function to know which clock is
+ *           currently used as system clock source.  
+ * @param  RCC_SYSCLKSource: specifies the clock source used as system clock source 
+ *   This parameter can be one of the following values:
+ *     @arg RCC_SYSCLKSource_HSI:    HSI selected as system clock source
+ *     @arg RCC_SYSCLKSource_HSE:    HSE selected as system clock source
+ *     @arg RCC_SYSCLKSource_PLLCLK: PLL selected as system clock source
+ * @retval None
+ */
+void RCC_SYSCLKConfig(uint32_t RCC_SYSCLKSource)
+{
+	uint32_t tmpreg = 0;
 
-                        /* Check the parameters */
-                        assert_param(IS_RCC_SYSCLK_SOURCE(RCC_SYSCLKSource));
+	/* Check the parameters */
+	assert_param(IS_RCC_SYSCLK_SOURCE(RCC_SYSCLKSource));
 
-                        tmpreg = RCC->CFGR;
+	tmpreg = RCC->CFGR;
 
-                        /* Clear SW[1:0] bits */
-                        tmpreg &= ~RCC_CFGR_SW;
+	/* Clear SW[1:0] bits */
+	tmpreg &= ~RCC_CFGR_SW;
 
-                        /* Set SW[1:0] bits according to RCC_SYSCLKSource value */
-                        tmpreg |= RCC_SYSCLKSource;
+	/* Set SW[1:0] bits according to RCC_SYSCLKSource value */
+	tmpreg |= RCC_SYSCLKSource;
 
-                        /* Store the new value */
-                        RCC->CFGR = tmpreg;
-                }
+	/* Store the new value */
+	RCC->CFGR = tmpreg;
+}
 
-        /**
-         * @brief  Returns the clock source used as system clock.
-         * @param  None
-         * @retval The clock source used as system clock. The returned value can be one 
-         *         of the following values:
-         *              - 0x00: HSI used as system clock
-         *              - 0x04: HSE used as system clock  
-         *              - 0x08: PLL used as system clock
-         */
-        uint8_t RCC_GetSYSCLKSource(void)
-        {
-                return ((uint8_t)(RCC->CFGR & RCC_CFGR_SWS));
-        }
+/**
+ * @brief  Returns the clock source used as system clock.
+ * @param  None
+ * @retval The clock source used as system clock. The returned value can be one 
+ *         of the following values:
+ *              - 0x00: HSI used as system clock
+ *              - 0x04: HSE used as system clock  
+ *              - 0x08: PLL used as system clock
+ */
+uint8_t RCC_GetSYSCLKSource(void)
+{
+	return ((uint8_t)(RCC->CFGR & RCC_CFGR_SWS));
+}
 
-        /**
-         * @brief  Configures the AHB clock (HCLK).
-         * @note   Depending on the device voltage range, the software has to set correctly
-         *         these bits to ensure that the system frequency does not exceed the
-         *         maximum allowed frequency (for more details refer to section above
-         *         "CPU, AHB and APB busses clocks configuration functions").
-         * @param  RCC_SYSCLK: defines the AHB clock divider. This clock is derived from 
-         *                     the system clock (SYSCLK).
-         *   This parameter can be one of the following values:
-         *     @arg RCC_SYSCLK_Div1:   AHB clock = SYSCLK
-         *     @arg RCC_SYSCLK_Div2:   AHB clock = SYSCLK/2
-         *     @arg RCC_SYSCLK_Div4:   AHB clock = SYSCLK/4
-         *     @arg RCC_SYSCLK_Div8:   AHB clock = SYSCLK/8
-         *     @arg RCC_SYSCLK_Div16:  AHB clock = SYSCLK/16
-         *     @arg RCC_SYSCLK_Div64:  AHB clock = SYSCLK/64
-         *     @arg RCC_SYSCLK_Div128: AHB clock = SYSCLK/128
-         *     @arg RCC_SYSCLK_Div256: AHB clock = SYSCLK/256
-         *     @arg RCC_SYSCLK_Div512: AHB clock = SYSCLK/512
-         * @retval None
-         */
-        void RCC_HCLKConfig(uint32_t RCC_SYSCLK)
-        {
-                uint32_t tmpreg = 0;
+/**
+ * @brief  Configures the AHB clock (HCLK).
+ * @note   Depending on the device voltage range, the software has to set correctly
+ *         these bits to ensure that the system frequency does not exceed the
+ *         maximum allowed frequency (for more details refer to section above
+ *         "CPU, AHB and APB busses clocks configuration functions").
+ * @param  RCC_SYSCLK: defines the AHB clock divider. This clock is derived from 
+ *                     the system clock (SYSCLK).
+ *   This parameter can be one of the following values:
+ *     @arg RCC_SYSCLK_Div1:   AHB clock = SYSCLK
+ *     @arg RCC_SYSCLK_Div2:   AHB clock = SYSCLK/2
+ *     @arg RCC_SYSCLK_Div4:   AHB clock = SYSCLK/4
+ *     @arg RCC_SYSCLK_Div8:   AHB clock = SYSCLK/8
+ *     @arg RCC_SYSCLK_Div16:  AHB clock = SYSCLK/16
+ *     @arg RCC_SYSCLK_Div64:  AHB clock = SYSCLK/64
+ *     @arg RCC_SYSCLK_Div128: AHB clock = SYSCLK/128
+ *     @arg RCC_SYSCLK_Div256: AHB clock = SYSCLK/256
+ *     @arg RCC_SYSCLK_Div512: AHB clock = SYSCLK/512
+ * @retval None
+ */
+void RCC_HCLKConfig(uint32_t RCC_SYSCLK)
+{
+	uint32_t tmpreg = 0;
 
-                /* Check the parameters */
-                assert_param(IS_RCC_HCLK(RCC_SYSCLK));
+	/* Check the parameters */
+	assert_param(IS_RCC_HCLK(RCC_SYSCLK));
 
-                tmpreg = RCC->CFGR;
+	tmpreg = RCC->CFGR;
 
-                /* Clear HPRE[3:0] bits */
-                tmpreg &= ~RCC_CFGR_HPRE;
+	/* Clear HPRE[3:0] bits */
+	tmpreg &= ~RCC_CFGR_HPRE;
 
-                /* Set HPRE[3:0] bits according to RCC_SYSCLK value */
-                tmpreg |= RCC_SYSCLK;
+	/* Set HPRE[3:0] bits according to RCC_SYSCLK value */
+	tmpreg |= RCC_SYSCLK;
 
-                /* Store the new value */
-                RCC->CFGR = tmpreg;
-        }
+	/* Store the new value */
+	RCC->CFGR = tmpreg;
+}
 
-        /**
-         * @brief  Configures the Low Speed APB clock (PCLK1).
-         * @param  RCC_HCLK: defines the APB1 clock divider. This clock is derived from 
-         *         the AHB clock (HCLK).
-         *   This parameter can be one of the following values:
-         *     @arg RCC_HCLK_Div1: APB1 clock = HCLK
-         *     @arg RCC_HCLK_Div2: APB1 clock = HCLK/2
-         *     @arg RCC_HCLK_Div4: APB1 clock = HCLK/4
-         *     @arg RCC_HCLK_Div8: APB1 clock = HCLK/8
-         *     @arg RCC_HCLK_Div16: APB1 clock = HCLK/16
-         * @retval None
-         */
-        void RCC_PCLK1Config(uint32_t RCC_HCLK)
-        {
-                uint32_t tmpreg = 0;
+/**
+ * @brief  Configures the Low Speed APB clock (PCLK1).
+ * @param  RCC_HCLK: defines the APB1 clock divider. This clock is derived from 
+ *         the AHB clock (HCLK).
+ *   This parameter can be one of the following values:
+ *     @arg RCC_HCLK_Div1: APB1 clock = HCLK
+ *     @arg RCC_HCLK_Div2: APB1 clock = HCLK/2
+ *     @arg RCC_HCLK_Div4: APB1 clock = HCLK/4
+ *     @arg RCC_HCLK_Div8: APB1 clock = HCLK/8
+ *     @arg RCC_HCLK_Div16: APB1 clock = HCLK/16
+ * @retval None
+ */
+void RCC_PCLK1Config(uint32_t RCC_HCLK)
+{
+	uint32_t tmpreg = 0;
 
-                /* Check the parameters */
-                assert_param(IS_RCC_PCLK(RCC_HCLK));
+	/* Check the parameters */
+	assert_param(IS_RCC_PCLK(RCC_HCLK));
 
-                tmpreg = RCC->CFGR;
-                /* Clear PPRE1[2:0] bits */
-                tmpreg &= ~RCC_CFGR_PPRE1;
+	tmpreg = RCC->CFGR;
+	/* Clear PPRE1[2:0] bits */
+	tmpreg &= ~RCC_CFGR_PPRE1;
 
-                /* Set PPRE1[2:0] bits according to RCC_HCLK value */
-                tmpreg |= RCC_HCLK;
+	/* Set PPRE1[2:0] bits according to RCC_HCLK value */
+	tmpreg |= RCC_HCLK;
 
-                /* Store the new value */
-                RCC->CFGR = tmpreg;
-        }
+	/* Store the new value */
+	RCC->CFGR = tmpreg;
+}
 
-        /**
-         * @brief  Configures the High Speed APB clock (PCLK2).
-         * @param  RCC_HCLK: defines the APB2 clock divider. This clock is derived from 
-         *         the AHB clock (HCLK).
-         *         This parameter can be one of the following values:
-         *             @arg RCC_HCLK_Div1: APB2 clock = HCLK
-         *             @arg RCC_HCLK_Div2: APB2 clock = HCLK/2
-         *             @arg RCC_HCLK_Div4: APB2 clock = HCLK/4
-         *             @arg RCC_HCLK_Div8: APB2 clock = HCLK/8
-         *             @arg RCC_HCLK_Div16: APB2 clock = HCLK/16
-         * @retval None
-         */
-        void RCC_PCLK2Config(uint32_t RCC_HCLK)
-        {
-                uint32_t tmpreg = 0;
+/**
+ * @brief  Configures the High Speed APB clock (PCLK2).
+ * @param  RCC_HCLK: defines the APB2 clock divider. This clock is derived from 
+ *         the AHB clock (HCLK).
+ *         This parameter can be one of the following values:
+ *             @arg RCC_HCLK_Div1: APB2 clock = HCLK
+ *             @arg RCC_HCLK_Div2: APB2 clock = HCLK/2
+ *             @arg RCC_HCLK_Div4: APB2 clock = HCLK/4
+ *             @arg RCC_HCLK_Div8: APB2 clock = HCLK/8
+ *             @arg RCC_HCLK_Div16: APB2 clock = HCLK/16
+ * @retval None
+ */
+void RCC_PCLK2Config(uint32_t RCC_HCLK)
+{
+	uint32_t tmpreg = 0;
 
-                /* Check the parameters */
-                assert_param(IS_RCC_PCLK(RCC_HCLK));
+	/* Check the parameters */
+	assert_param(IS_RCC_PCLK(RCC_HCLK));
 
-                tmpreg = RCC->CFGR;
-                /* Clear PPRE2[2:0] bits */
-                tmpreg &= ~RCC_CFGR_PPRE2;
-                /* Set PPRE2[2:0] bits according to RCC_HCLK value */
-                tmpreg |= RCC_HCLK << 3;
-                /* Store the new value */
-                RCC->CFGR = tmpreg;
-        }
+	tmpreg = RCC->CFGR;
+	/* Clear PPRE2[2:0] bits */
+	tmpreg &= ~RCC_CFGR_PPRE2;
+	/* Set PPRE2[2:0] bits according to RCC_HCLK value */
+	tmpreg |= RCC_HCLK << 3;
+	/* Store the new value */
+	RCC->CFGR = tmpreg;
+}
 
-        /**
-         * @brief  Returns the frequencies of the System, AHB, APB2 and APB1 busses clocks.
-         * 
-         *  @note    This function returns the frequencies of :
-         *           System, AHB, APB2 and APB1 busses clocks, ADC1/2/3/4 clocks, 
-         *           USART1/2/3/4/5 clocks, I2C1/2 clocks and TIM1/8 Clocks.
-         *                         
-         * @note     The frequency returned by this function is not the real frequency
-         *           in the chip. It is calculated based on the predefined constant and
-         *           the source selected by RCC_SYSCLKConfig().
-         *                                              
-         * @note      If SYSCLK source is HSI, function returns constant HSI_VALUE(*)
-         *                                              
-         * @note      If SYSCLK source is HSE, function returns constant HSE_VALUE(**)
-         *                          
-         * @note      If SYSCLK source is PLL, function returns constant HSE_VALUE(**) 
-         *             or HSI_VALUE(*) multiplied by the PLL factors.
-         *         
-         * @note     (*) HSI_VALUE is a constant defined in stm32f30x.h file (default value
-         *               8 MHz) but the real value may vary depending on the variations
-         *               in voltage and temperature, refer to RCC_AdjustHSICalibrationValue().   
-         *    
-         * @note     (**) HSE_VALUE is a constant defined in stm32f30x.h file (default value
-         *                8 MHz), user has to ensure that HSE_VALUE is same as the real
-         *                frequency of the crystal used. Otherwise, this function may
-         *                return wrong result.
-         *                
-         * @note     The result of this function could be not correct when using fractional
-         *           value for HSE crystal.   
-         *             
-         * @param  RCC_Clocks: pointer to a RCC_ClocksTypeDef structure which will hold 
-         *         the clocks frequencies. 
-         *     
-         * @note     This function can be used by the user application to compute the 
-         *           baudrate for the communication peripherals or configure other parameters.
-         * @note     Each time SYSCLK, HCLK, PCLK1 and/or PCLK2 clock changes, this function
-         *           must be called to update the structure's field. Otherwise, any
-         *           configuration based on this function will be incorrect.
-         *    
-         * @retval None
-         */
-        void RCC_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
-        {
-                uint32_t tmp = 0, pllmull = 0, pllsource = 0, prediv1factor = 0, presc = 0, pllclk = 0;
-                uint32_t apb2presc = 0, ahbpresc = 0;
+/**
+ * @brief  Returns the frequencies of the System, AHB, APB2 and APB1 busses clocks.
+ * 
+ *  @note    This function returns the frequencies of :
+ *           System, AHB, APB2 and APB1 busses clocks, ADC1/2/3/4 clocks, 
+ *           USART1/2/3/4/5 clocks, I2C1/2 clocks and TIM1/8 Clocks.
+ *                         
+ * @note     The frequency returned by this function is not the real frequency
+ *           in the chip. It is calculated based on the predefined constant and
+ *           the source selected by RCC_SYSCLKConfig().
+ *                                              
+ * @note      If SYSCLK source is HSI, function returns constant HSI_VALUE(*)
+ *                                              
+ * @note      If SYSCLK source is HSE, function returns constant HSE_VALUE(**)
+ *                          
+ * @note      If SYSCLK source is PLL, function returns constant HSE_VALUE(**) 
+ *             or HSI_VALUE(*) multiplied by the PLL factors.
+ *         
+ * @note     (*) HSI_VALUE is a constant defined in stm32f30x.h file (default value
+ *               8 MHz) but the real value may vary depending on the variations
+ *               in voltage and temperature, refer to RCC_AdjustHSICalibrationValue().   
+ *    
+ * @note     (**) HSE_VALUE is a constant defined in stm32f30x.h file (default value
+ *                8 MHz), user has to ensure that HSE_VALUE is same as the real
+ *                frequency of the crystal used. Otherwise, this function may
+ *                return wrong result.
+ *                
+ * @note     The result of this function could be not correct when using fractional
+ *           value for HSE crystal.   
+ *             
+ * @param  RCC_Clocks: pointer to a RCC_ClocksTypeDef structure which will hold 
+ *         the clocks frequencies. 
+ *     
+ * @note     This function can be used by the user application to compute the 
+ *           baudrate for the communication peripherals or configure other parameters.
+ * @note     Each time SYSCLK, HCLK, PCLK1 and/or PCLK2 clock changes, this function
+ *           must be called to update the structure's field. Otherwise, any
+ *           configuration based on this function will be incorrect.
+ *    
+ * @retval None
+ */
+void RCC_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks)
+{
+	uint32_t tmp = 0, pllmull = 0, pllsource = 0, prediv1factor = 0, presc = 0, pllclk = 0;
+	uint32_t apb2presc = 0, ahbpresc = 0;
 
-                /* Get SYSCLK source -------------------------------------------------------*/
-                tmp = RCC->CFGR & RCC_CFGR_SWS;
+	/* Get SYSCLK source -------------------------------------------------------*/
+	tmp = RCC->CFGR & RCC_CFGR_SWS;
 
-                switch (tmp)
-                {
-                        case 0x00:  /* HSI used as system clock */
-                                RCC_Clocks->SYSCLK_Frequency = HSI_VALUE;
-                                break;
-                        case 0x04:  /* HSE used as system clock */
-                                RCC_Clocks->SYSCLK_Frequency = HSE_VALUE;
-                                break;
-                        case 0x08:  /* PLL used as system clock */
-                                /* Get PLL clock source and multiplication factor ----------------------*/
-                                pllmull = RCC->CFGR & RCC_CFGR_PLLMULL;
-                                pllsource = RCC->CFGR & RCC_CFGR_PLLSRC;
-                                pllmull = ( pllmull >> 18) + 2;
+	switch (tmp) {
+	case 0x00:  /* HSI used as system clock */
+		RCC_Clocks->SYSCLK_Frequency = HSI_VALUE;
+		break;
+	case 0x04:  /* HSE used as system clock */
+		RCC_Clocks->SYSCLK_Frequency = HSE_VALUE;
+		break;
+	case 0x08:  /* PLL used as system clock */
+		/* Get PLL clock source and multiplication factor ----------------------*/
+		pllmull = RCC->CFGR & RCC_CFGR_PLLMULL;
+		pllsource = RCC->CFGR & RCC_CFGR_PLLSRC;
+		pllmull = ( pllmull >> 18) + 2;
 
-                                if (pllsource == 0x00)
-                                {
-                                        /* HSI oscillator clock divided by 2 selected as PLL clock entry */
-                                        pllclk = (HSI_VALUE >> 1) * pllmull;
-                                }
-                                else
-                                {
-                                        prediv1factor = (RCC->CFGR2 & RCC_CFGR2_PREDIV1) + 1;
-                                        /* HSE oscillator clock selected as PREDIV1 clock entry */
-                                        pllclk = (HSE_VALUE / prediv1factor) * pllmull; 
-                                }
-                                RCC_Clocks->SYSCLK_Frequency = pllclk;      
-                                break;
-                        default: /* HSI used as system clock */
-                                RCC_Clocks->SYSCLK_Frequency = HSI_VALUE;
-                                break;
-                }
-                /* Compute HCLK, PCLK clocks frequencies -----------------------------------*/
-                /* Get HCLK prescaler */
-                tmp = RCC->CFGR & RCC_CFGR_HPRE;
-                tmp = tmp >> 4;
-                ahbpresc = APBAHBPrescTable[tmp]; 
-                /* HCLK clock frequency */
-                RCC_Clocks->HCLK_Frequency = RCC_Clocks->SYSCLK_Frequency >> ahbpresc;
+		if (pllsource == 0x00) {
+			/* HSI oscillator clock divided by 2 selected as PLL clock entry */
+			pllclk = (HSI_VALUE >> 1) * pllmull;
+		}
+		else {
+			prediv1factor = (RCC->CFGR2 & RCC_CFGR2_PREDIV1) + 1;
+			/* HSE oscillator clock selected as PREDIV1 clock entry */
+			pllclk = (HSE_VALUE / prediv1factor) * pllmull; 
+		}
+		RCC_Clocks->SYSCLK_Frequency = pllclk;      
+		break;
+	default: /* HSI used as system clock */
+		RCC_Clocks->SYSCLK_Frequency = HSI_VALUE;
+		break;
+	}
+	/* Compute HCLK, PCLK clocks frequencies -----------------------------------*/
+	/* Get HCLK prescaler */
+	tmp = RCC->CFGR & RCC_CFGR_HPRE;
+	tmp = tmp >> 4;
+	ahbpresc = APBAHBPrescTable[tmp]; 
+	/* HCLK clock frequency */
+	RCC_Clocks->HCLK_Frequency = RCC_Clocks->SYSCLK_Frequency >> ahbpresc;
 
-                /* Get PCLK1 prescaler */
-                tmp = RCC->CFGR & RCC_CFGR_PPRE1;
-                tmp = tmp >> 8;
-                presc = APBAHBPrescTable[tmp];
-                /* PCLK1 clock frequency */
-                RCC_Clocks->PCLK1_Frequency = RCC_Clocks->HCLK_Frequency >> presc;
+	/* Get PCLK1 prescaler */
+	tmp = RCC->CFGR & RCC_CFGR_PPRE1;
+	tmp = tmp >> 8;
+	presc = APBAHBPrescTable[tmp];
+	/* PCLK1 clock frequency */
+	RCC_Clocks->PCLK1_Frequency = RCC_Clocks->HCLK_Frequency >> presc;
 
-                /* Get PCLK2 prescaler */
-                tmp = RCC->CFGR & RCC_CFGR_PPRE2;
-                tmp = tmp >> 11;
-                apb2presc = APBAHBPrescTable[tmp];
-                /* PCLK2 clock frequency */
-                RCC_Clocks->PCLK2_Frequency = RCC_Clocks->HCLK_Frequency >> apb2presc;
+	/* Get PCLK2 prescaler */
+	tmp = RCC->CFGR & RCC_CFGR_PPRE2;
+	tmp = tmp >> 11;
+	apb2presc = APBAHBPrescTable[tmp];
+	/* PCLK2 clock frequency */
+	RCC_Clocks->PCLK2_Frequency = RCC_Clocks->HCLK_Frequency >> apb2presc;
 
-                /* Get ADC12CLK prescaler */
-                tmp = RCC->CFGR2 & RCC_CFGR2_ADCPRE12;
-                tmp = tmp >> 4;
-                presc = ADCPrescTable[tmp];
-                if ((presc & 0x10) != 0)
-                {
-                        /* ADC12CLK clock frequency is derived from PLL clock */
-                        RCC_Clocks->ADC12CLK_Frequency = pllclk / presc;
-                }
-                else
-                {
-                        /* ADC12CLK clock frequency is AHB clock */
-                        RCC_Clocks->ADC12CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
-                }
+	/* Get ADC12CLK prescaler */
+	tmp = RCC->CFGR2 & RCC_CFGR2_ADCPRE12;
+	tmp = tmp >> 4;
+	presc = ADCPrescTable[tmp];
+	if ((presc & 0x10) != 0) {
+		/* ADC12CLK clock frequency is derived from PLL clock */
+		RCC_Clocks->ADC12CLK_Frequency = pllclk / presc;
+	}
+	else {
+		/* ADC12CLK clock frequency is AHB clock */
+		RCC_Clocks->ADC12CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
+	}
 
-                /* Get ADC34CLK prescaler */
-                tmp = RCC->CFGR2 & RCC_CFGR2_ADCPRE34;
-                tmp = tmp >> 9;
-                presc = ADCPrescTable[tmp];
-                if ((presc & 0x10) != 0)
-                {
-                        /* ADC34CLK clock frequency is derived from PLL clock */
-                        RCC_Clocks->ADC34CLK_Frequency = pllclk / presc;
-                }
-                else
-                {
-                        /* ADC34CLK clock frequency is AHB clock */
-                        RCC_Clocks->ADC34CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
-                }
+	/* Get ADC34CLK prescaler */
+	tmp = RCC->CFGR2 & RCC_CFGR2_ADCPRE34;
+	tmp = tmp >> 9;
+	presc = ADCPrescTable[tmp];
+	if ((presc & 0x10) != 0) {
+		/* ADC34CLK clock frequency is derived from PLL clock */
+		RCC_Clocks->ADC34CLK_Frequency = pllclk / presc;
+	}
+	else {
+		/* ADC34CLK clock frequency is AHB clock */
+		RCC_Clocks->ADC34CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
+	}
 
-                /* I2C1CLK clock frequency */
-                if((RCC->CFGR3 & RCC_CFGR3_I2C1SW) != RCC_CFGR3_I2C1SW)
-                {
-                        /* I2C1 Clock is HSI Osc. */
-                        RCC_Clocks->I2C1CLK_Frequency = HSI_VALUE;
-                }
-                else
-                {
-                        /* I2C1 Clock is System Clock */
-                        RCC_Clocks->I2C1CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
-                }
+	/* I2C1CLK clock frequency */
+	if((RCC->CFGR3 & RCC_CFGR3_I2C1SW) != RCC_CFGR3_I2C1SW) {
+		/* I2C1 Clock is HSI Osc. */
+		RCC_Clocks->I2C1CLK_Frequency = HSI_VALUE;
+	}
+	else {
+		/* I2C1 Clock is System Clock */
+		RCC_Clocks->I2C1CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
+	}
 
-                /* I2C2CLK clock frequency */
-                if((RCC->CFGR3 & RCC_CFGR3_I2C2SW) != RCC_CFGR3_I2C2SW)
-                {
-                        /* I2C2 Clock is HSI Osc. */
-                        RCC_Clocks->I2C2CLK_Frequency = HSI_VALUE;
-                }
-                else
-                {
-                        /* I2C2 Clock is System Clock */
-                        RCC_Clocks->I2C2CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
-                }
+	/* I2C2CLK clock frequency */
+	if((RCC->CFGR3 & RCC_CFGR3_I2C2SW) != RCC_CFGR3_I2C2SW) {
+		/* I2C2 Clock is HSI Osc. */
+		RCC_Clocks->I2C2CLK_Frequency = HSI_VALUE;
+	}
+	else {
+		/* I2C2 Clock is System Clock */
+		RCC_Clocks->I2C2CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
+	}
 
-                /* TIM1CLK clock frequency */
-                if(((RCC->CFGR3 & RCC_CFGR3_TIM1SW) == RCC_CFGR3_TIM1SW)&& (RCC_Clocks->SYSCLK_Frequency == pllclk) \
-                                && (apb2presc == ahbpresc)) 
-                {
-                        /* TIM1 Clock is 2 * pllclk */
-                        RCC_Clocks->TIM1CLK_Frequency = pllclk * 2;
-                }
-                else
-                {
-                        /* TIM1 Clock is APB2 clock. */
-                        RCC_Clocks->TIM1CLK_Frequency = RCC_Clocks->PCLK2_Frequency;
-                }
+	/* TIM1CLK clock frequency */
+	if(((RCC->CFGR3 & RCC_CFGR3_TIM1SW) == RCC_CFGR3_TIM1SW)&& (RCC_Clocks->SYSCLK_Frequency == pllclk) \
+			&& (apb2presc == ahbpresc)) {
+		/* TIM1 Clock is 2 * pllclk */
+		RCC_Clocks->TIM1CLK_Frequency = pllclk * 2;
+	}
+	else {
+		/* TIM1 Clock is APB2 clock. */
+		RCC_Clocks->TIM1CLK_Frequency = RCC_Clocks->PCLK2_Frequency;
+	}
 
-                /* TIM8CLK clock frequency */
-                if(((RCC->CFGR3 & RCC_CFGR3_TIM8SW) == RCC_CFGR3_TIM8SW)&& (RCC_Clocks->SYSCLK_Frequency == pllclk) \
-                                && (apb2presc == ahbpresc))
-                {
-                        /* TIM8 Clock is 2 * pllclk */
-                        RCC_Clocks->TIM8CLK_Frequency = pllclk * 2;
-                }
-                else
-                {
-                        /* TIM8 Clock is APB2 clock. */
-                        RCC_Clocks->TIM8CLK_Frequency = RCC_Clocks->PCLK2_Frequency;
-                }
+	/* TIM8CLK clock frequency */
+	if(((RCC->CFGR3 & RCC_CFGR3_TIM8SW) == RCC_CFGR3_TIM8SW)&& (RCC_Clocks->SYSCLK_Frequency == pllclk) \
+			&& (apb2presc == ahbpresc)) {
+		/* TIM8 Clock is 2 * pllclk */
+		RCC_Clocks->TIM8CLK_Frequency = pllclk * 2;
+	}
+	else {
+		/* TIM8 Clock is APB2 clock. */
+		RCC_Clocks->TIM8CLK_Frequency = RCC_Clocks->PCLK2_Frequency;
+	}
 
-                /* USART1CLK clock frequency */
-                if((RCC->CFGR3 & RCC_CFGR3_USART1SW) == 0x0)
-                {
-                        /* USART Clock is PCLK */
-                        RCC_Clocks->USART1CLK_Frequency = RCC_Clocks->PCLK2_Frequency;
-                }
-                else if((RCC->CFGR3 & RCC_CFGR3_USART1SW) == RCC_CFGR3_USART1SW_0)
-                {
-                        /* USART Clock is System Clock */
-                        RCC_Clocks->USART1CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
-                }
-                else if((RCC->CFGR3 & RCC_CFGR3_USART1SW) == RCC_CFGR3_USART1SW_1)
-                {
-                        /* USART Clock is LSE Osc. */
-                        RCC_Clocks->USART1CLK_Frequency = LSE_VALUE;
-                }
-                else if((RCC->CFGR3 & RCC_CFGR3_USART1SW) == RCC_CFGR3_USART1SW)
-                {
-                        /* USART Clock is HSI Osc. */
-                        RCC_Clocks->USART1CLK_Frequency = HSI_VALUE;
-                }
+	/* USART1CLK clock frequency */
+	if((RCC->CFGR3 & RCC_CFGR3_USART1SW) == 0x0) {
+		/* USART Clock is PCLK */
+		RCC_Clocks->USART1CLK_Frequency = RCC_Clocks->PCLK2_Frequency;
+	}
+	else if((RCC->CFGR3 & RCC_CFGR3_USART1SW) == RCC_CFGR3_USART1SW_0) {
+		/* USART Clock is System Clock */
+		RCC_Clocks->USART1CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
+	}
+	else if((RCC->CFGR3 & RCC_CFGR3_USART1SW) == RCC_CFGR3_USART1SW_1) {
+		/* USART Clock is LSE Osc. */
+		RCC_Clocks->USART1CLK_Frequency = LSE_VALUE;
+	}
+	else if((RCC->CFGR3 & RCC_CFGR3_USART1SW) == RCC_CFGR3_USART1SW) {
+		/* USART Clock is HSI Osc. */
+		RCC_Clocks->USART1CLK_Frequency = HSI_VALUE;
+	}
 
-                /* USART2CLK clock frequency */
-                if((RCC->CFGR3 & RCC_CFGR3_USART2SW) == 0x0)
-                {
-                        /* USART Clock is PCLK */
-                        RCC_Clocks->USART2CLK_Frequency = RCC_Clocks->PCLK1_Frequency;
-                }
-                else if((RCC->CFGR3 & RCC_CFGR3_USART2SW) == RCC_CFGR3_USART2SW_0)
-                {
-                        /* USART Clock is System Clock */
-                        RCC_Clocks->USART2CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
-                }
-                else if((RCC->CFGR3 & RCC_CFGR3_USART2SW) == RCC_CFGR3_USART2SW_1)
-                {
-                        /* USART Clock is LSE Osc. */
-                        RCC_Clocks->USART2CLK_Frequency = LSE_VALUE;
-                }
-                else if((RCC->CFGR3 & RCC_CFGR3_USART2SW) == RCC_CFGR3_USART2SW)
-                {
-                        /* USART Clock is HSI Osc. */
-                        RCC_Clocks->USART2CLK_Frequency = HSI_VALUE;
-                }    
+	/* USART2CLK clock frequency */
+	if((RCC->CFGR3 & RCC_CFGR3_USART2SW) == 0x0) {
+		/* USART Clock is PCLK */
+		RCC_Clocks->USART2CLK_Frequency = RCC_Clocks->PCLK1_Frequency;
+	}
+	else if((RCC->CFGR3 & RCC_CFGR3_USART2SW) == RCC_CFGR3_USART2SW_0) {
+		/* USART Clock is System Clock */
+		RCC_Clocks->USART2CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
+	}
+	else if((RCC->CFGR3 & RCC_CFGR3_USART2SW) == RCC_CFGR3_USART2SW_1) {
+		/* USART Clock is LSE Osc. */
+		RCC_Clocks->USART2CLK_Frequency = LSE_VALUE;
+	}
+	else if((RCC->CFGR3 & RCC_CFGR3_USART2SW) == RCC_CFGR3_USART2SW) {
+		/* USART Clock is HSI Osc. */
+		RCC_Clocks->USART2CLK_Frequency = HSI_VALUE;
+	}    
 
-                /* USART3CLK clock frequency */
-                if((RCC->CFGR3 & RCC_CFGR3_USART3SW) == 0x0)
-                {
-                        /* USART Clock is PCLK */
-                        RCC_Clocks->USART3CLK_Frequency = RCC_Clocks->PCLK1_Frequency;
-                }
-                else if((RCC->CFGR3 & RCC_CFGR3_USART3SW) == RCC_CFGR3_USART3SW_0)
-                {
-                        /* USART Clock is System Clock */
-                        RCC_Clocks->USART3CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
-                }
-                else if((RCC->CFGR3 & RCC_CFGR3_USART3SW) == RCC_CFGR3_USART3SW_1)
-                {
-                        /* USART Clock is LSE Osc. */
-                        RCC_Clocks->USART3CLK_Frequency = LSE_VALUE;
-                }
-                else if((RCC->CFGR3 & RCC_CFGR3_USART3SW) == RCC_CFGR3_USART3SW)
-                {
-                        /* USART Clock is HSI Osc. */
-                        RCC_Clocks->USART3CLK_Frequency = HSI_VALUE;
-                }
+	/* USART3CLK clock frequency */
+	if((RCC->CFGR3 & RCC_CFGR3_USART3SW) == 0x0) {
+		/* USART Clock is PCLK */
+		RCC_Clocks->USART3CLK_Frequency = RCC_Clocks->PCLK1_Frequency;
+	}
+	else if((RCC->CFGR3 & RCC_CFGR3_USART3SW) == RCC_CFGR3_USART3SW_0) {
+		/* USART Clock is System Clock */
+		RCC_Clocks->USART3CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
+	}
+	else if((RCC->CFGR3 & RCC_CFGR3_USART3SW) == RCC_CFGR3_USART3SW_1) {
+		/* USART Clock is LSE Osc. */
+		RCC_Clocks->USART3CLK_Frequency = LSE_VALUE;
+	}
+	else if((RCC->CFGR3 & RCC_CFGR3_USART3SW) == RCC_CFGR3_USART3SW) {
+		/* USART Clock is HSI Osc. */
+		RCC_Clocks->USART3CLK_Frequency = HSI_VALUE;
+	}
 
-                /* UART4CLK clock frequency */
-                if((RCC->CFGR3 & RCC_CFGR3_UART4SW) == 0x0)
-                {
-                        /* USART Clock is PCLK */
-                        RCC_Clocks->UART4CLK_Frequency = RCC_Clocks->PCLK1_Frequency;
-                }
-                else if((RCC->CFGR3 & RCC_CFGR3_UART4SW) == RCC_CFGR3_UART4SW_0)
-                {
-                        /* USART Clock is System Clock */
-                        RCC_Clocks->UART4CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
-                }
-                else if((RCC->CFGR3 & RCC_CFGR3_UART4SW) == RCC_CFGR3_UART4SW_1)
-                {
-                        /* USART Clock is LSE Osc. */
-                        RCC_Clocks->UART4CLK_Frequency = LSE_VALUE;
-                }
-                else if((RCC->CFGR3 & RCC_CFGR3_UART4SW) == RCC_CFGR3_UART4SW)
-                {
-                        /* USART Clock is HSI Osc. */
-                        RCC_Clocks->UART4CLK_Frequency = HSI_VALUE;
-                }   
+	/* UART4CLK clock frequency */
+	if((RCC->CFGR3 & RCC_CFGR3_UART4SW) == 0x0) {
+		/* USART Clock is PCLK */
+		RCC_Clocks->UART4CLK_Frequency = RCC_Clocks->PCLK1_Frequency;
+	}
+	else if((RCC->CFGR3 & RCC_CFGR3_UART4SW) == RCC_CFGR3_UART4SW_0) {
+		/* USART Clock is System Clock */
+		RCC_Clocks->UART4CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
+	}
+	else if((RCC->CFGR3 & RCC_CFGR3_UART4SW) == RCC_CFGR3_UART4SW_1) {
+		/* USART Clock is LSE Osc. */
+		RCC_Clocks->UART4CLK_Frequency = LSE_VALUE;
+	}
+	else if((RCC->CFGR3 & RCC_CFGR3_UART4SW) == RCC_CFGR3_UART4SW) {
+		/* USART Clock is HSI Osc. */
+		RCC_Clocks->UART4CLK_Frequency = HSI_VALUE;
+	}   
 
-                /* UART5CLK clock frequency */
-                if((RCC->CFGR3 & RCC_CFGR3_UART5SW) == 0x0)
-                {
-                        /* USART Clock is PCLK */
-                        RCC_Clocks->UART5CLK_Frequency = RCC_Clocks->PCLK1_Frequency;
-                }
-                else if((RCC->CFGR3 & RCC_CFGR3_UART5SW) == RCC_CFGR3_UART5SW_0)
-                {
-                        /* USART Clock is System Clock */
-                        RCC_Clocks->UART5CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
-                }
-                else if((RCC->CFGR3 & RCC_CFGR3_UART5SW) == RCC_CFGR3_UART5SW_1)
-                {
-                        /* USART Clock is LSE Osc. */
-                        RCC_Clocks->UART5CLK_Frequency = LSE_VALUE;
-                }
-                else if((RCC->CFGR3 & RCC_CFGR3_UART5SW) == RCC_CFGR3_UART5SW)
-                {
-                        /* USART Clock is HSI Osc. */
-                        RCC_Clocks->UART5CLK_Frequency = HSI_VALUE;
-                } 
-        }
+	/* UART5CLK clock frequency */
+	if((RCC->CFGR3 & RCC_CFGR3_UART5SW) == 0x0) {
+		/* USART Clock is PCLK */
+		RCC_Clocks->UART5CLK_Frequency = RCC_Clocks->PCLK1_Frequency;
+	}
+	else if((RCC->CFGR3 & RCC_CFGR3_UART5SW) == RCC_CFGR3_UART5SW_0) {
+		/* USART Clock is System Clock */
+		RCC_Clocks->UART5CLK_Frequency = RCC_Clocks->SYSCLK_Frequency;
+	}
+	else if((RCC->CFGR3 & RCC_CFGR3_UART5SW) == RCC_CFGR3_UART5SW_1) {
+		/* USART Clock is LSE Osc. */
+		RCC_Clocks->UART5CLK_Frequency = LSE_VALUE;
+	}
+	else if((RCC->CFGR3 & RCC_CFGR3_UART5SW) == RCC_CFGR3_UART5SW) {
+		/* USART Clock is HSI Osc. */
+		RCC_Clocks->UART5CLK_Frequency = HSI_VALUE;
+	} 
+}
 
-        /**
-         * @}
-         */
+/**
+ * @}
+ */
 
 /** @defgroup RCC_Group3 Peripheral clocks configuration functions
  *  @brief   Peripheral clocks configuration functions 
@@ -1113,13 +1078,11 @@ void RCC_ADCCLKConfig(uint32_t RCC_PLLCLK)
         tmp = (RCC_PLLCLK >> 28);
 
         /* Clears ADCPRE34 bits */
-        if (tmp != 0)
-        {
+        if (tmp != 0) {
                 RCC->CFGR2 &= ~RCC_CFGR2_ADCPRE34;
         }
         /* Clears ADCPRE12 bits */
-        else
-        {
+        else {
                 RCC->CFGR2 &= ~RCC_CFGR2_ADCPRE12;
         }
         /* Set ADCPRE bits according to RCC_PLLCLK value */
@@ -1146,12 +1109,10 @@ void RCC_I2CCLKConfig(uint32_t RCC_I2CCLK)
         tmp = (RCC_I2CCLK >> 28);
 
         /* Clear I2CSW bit */
-        if (tmp != 0)
-        {
+        if (tmp != 0) {
                 RCC->CFGR3 &= ~RCC_CFGR3_I2C2SW;
         }
-        else
-        {
+        else {
                 RCC->CFGR3 &= ~RCC_CFGR3_I2C1SW;
         }
         /* Set I2CSW bits according to RCC_I2CCLK value */
@@ -1182,12 +1143,10 @@ void RCC_TIMCLKConfig(uint32_t RCC_TIMCLK)
         tmp = (RCC_TIMCLK >> 28);
 
         /* Clear I2CSW bit */
-        if (tmp != 0)
-        {
+        if (tmp != 0) {
                 RCC->CFGR3 &= ~RCC_CFGR3_TIM8SW;
         }
-        else
-        {
+        else {
                 RCC->CFGR3 &= ~RCC_CFGR3_TIM1SW;
         }
         /* Set I2CSW bits according to RCC_TIMCLK value */
@@ -1216,25 +1175,24 @@ void RCC_USARTCLKConfig(uint32_t RCC_USARTCLK)
         tmp = (RCC_USARTCLK >> 28);
 
         /* Clear USARTSW[1:0] bit */
-        switch (tmp)
-        {
-                case 0x01:  /* clear USART1SW */
-                        RCC->CFGR3 &= ~RCC_CFGR3_USART1SW;
-                        break;
-                case 0x02:  /* clear USART2SW */
-                        RCC->CFGR3 &= ~RCC_CFGR3_USART2SW;
-                        break;
-                case 0x03:  /* clear USART3SW */
-                        RCC->CFGR3 &= ~RCC_CFGR3_USART3SW;
-                        break;
-                case 0x04:  /* clear UART4SW */
-                        RCC->CFGR3 &= ~RCC_CFGR3_UART4SW;
-                        break;
-                case 0x05:  /* clear UART5SW */
-                        RCC->CFGR3 &= ~RCC_CFGR3_UART5SW;
-                        break;
-                default:
-                        break;
+        switch (tmp) {
+	case 0x01:  /* clear USART1SW */
+		RCC->CFGR3 &= ~RCC_CFGR3_USART1SW;
+		break;
+	case 0x02:  /* clear USART2SW */
+		RCC->CFGR3 &= ~RCC_CFGR3_USART2SW;
+		break;
+	case 0x03:  /* clear USART3SW */
+		RCC->CFGR3 &= ~RCC_CFGR3_USART3SW;
+		break;
+	case 0x04:  /* clear UART4SW */
+		RCC->CFGR3 &= ~RCC_CFGR3_UART4SW;
+		break;
+	case 0x05:  /* clear UART5SW */
+		RCC->CFGR3 &= ~RCC_CFGR3_UART5SW;
+		break;
+	default:
+		break;
         }
 
         /* Set USARTSW bits according to RCC_USARTCLK value */
@@ -1639,20 +1597,16 @@ FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG)
         /* Get the RCC register index */
         tmp = RCC_FLAG >> 5;
 
-        if (tmp == 0)               /* The flag to check is in CR register */
-        {
+        if (tmp == 0) {              /* The flag to check is in CR register */
                 statusreg = RCC->CR;
         }
-        else if (tmp == 1)          /* The flag to check is in BDCR register */
-        {
+        else if (tmp == 1) {        /* The flag to check is in BDCR register */
                 statusreg = RCC->BDCR;
         }
-        else if (tmp == 4)          /* The flag to check is in CFGR register */
-        {
+        else if (tmp == 4) {         /* The flag to check is in CFGR register */
                 statusreg = RCC->CFGR;
         }
-        else                       /* The flag to check is in CSR register */
-        {
+        else {                      /* The flag to check is in CSR register */
                 statusreg = RCC->CSR;
         }
 

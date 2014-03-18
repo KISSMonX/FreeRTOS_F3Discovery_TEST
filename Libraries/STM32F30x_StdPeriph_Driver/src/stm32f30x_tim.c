@@ -463,13 +463,11 @@ void TIM_UpdateRequestConfig(TIM_TypeDef* TIMx, uint16_t TIM_UpdateSource)
         assert_param(IS_TIM_ALL_PERIPH(TIMx));
         assert_param(IS_TIM_UPDATE_SOURCE(TIM_UpdateSource));
 
-        if (TIM_UpdateSource != TIM_UpdateSource_Global)
-        {
+        if (TIM_UpdateSource != TIM_UpdateSource_Global) {
                 /* Set the URS Bit */
                 TIMx->CR1 |= TIM_CR1_URS;
         }
-        else
-        {
+        else {
                 /* Reset the URS Bit */
                 TIMx->CR1 &= (uint16_t)~TIM_CR1_URS;
         }
@@ -489,13 +487,11 @@ void TIM_UIFRemap(TIM_TypeDef* TIMx, FunctionalState NewState)
         assert_param(IS_TIM_ALL_PERIPH(TIMx)); 
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the TIM Counter */
                 TIMx->CR1 |= TIM_CR1_UIFREMAP;
         }
-        else
-        {
+        else {
                 /* Disable the TIM Counter */
                 TIMx->CR1 &= (uint16_t)~TIM_CR1_UIFREMAP;
         }  
@@ -514,13 +510,11 @@ void TIM_ARRPreloadConfig(TIM_TypeDef* TIMx, FunctionalState NewState)
         assert_param(IS_TIM_ALL_PERIPH(TIMx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Set the ARR Preload Bit */
                 TIMx->CR1 |= TIM_CR1_ARPE;
         }
-        else
-        {
+        else {
                 /* Reset the ARR Preload Bit */
                 TIMx->CR1 &= (uint16_t)~TIM_CR1_ARPE;
         }
@@ -585,8 +579,7 @@ void TIM_Cmd(TIM_TypeDef* TIMx, FunctionalState NewState)
         assert_param(IS_TIM_ALL_PERIPH(TIMx)); 
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the TIM Counter */
                 TIMx->CR1 |= TIM_CR1_CEN;
         }
@@ -692,8 +685,7 @@ void TIM_OC1Init(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct)
         /* Set the Output State */
         tmpccer |= TIM_OCInitStruct->TIM_OutputState;
 
-        if((TIMx == TIM1) || (TIMx == TIM8) || (TIMx == TIM15) || (TIMx == TIM16) || (TIMx == TIM17))
-        {
+        if((TIMx == TIM1) || (TIMx == TIM8) || (TIMx == TIM15) || (TIMx == TIM16) || (TIMx == TIM17)) {
                 assert_param(IS_TIM_OUTPUTN_STATE(TIM_OCInitStruct->TIM_OutputNState));
                 assert_param(IS_TIM_OCN_POLARITY(TIM_OCInitStruct->TIM_OCNPolarity));
                 assert_param(IS_TIM_OCNIDLE_STATE(TIM_OCInitStruct->TIM_OCNIdleState));
@@ -773,8 +765,7 @@ void TIM_OC2Init(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct)
         /* Set the Output State */
         tmpccer |= (uint32_t)((uint32_t)TIM_OCInitStruct->TIM_OutputState << 4);
 
-        if((TIMx == TIM1) || (TIMx == TIM8))
-        {
+        if((TIMx == TIM1) || (TIMx == TIM8)) {
                 assert_param(IS_TIM_OUTPUTN_STATE(TIM_OCInitStruct->TIM_OutputNState));
                 assert_param(IS_TIM_OCN_POLARITY(TIM_OCInitStruct->TIM_OCNPolarity));
                 assert_param(IS_TIM_OCNIDLE_STATE(TIM_OCInitStruct->TIM_OCNIdleState));
@@ -853,8 +844,7 @@ void TIM_OC3Init(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct)
         /* Set the Output State */
         tmpccer |= (uint32_t)((uint32_t)TIM_OCInitStruct->TIM_OutputState << 8);
 
-        if((TIMx == TIM1) || (TIMx == TIM8))
-        {
+        if((TIMx == TIM1) || (TIMx == TIM8)) {
                 assert_param(IS_TIM_OUTPUTN_STATE(TIM_OCInitStruct->TIM_OutputNState));
                 assert_param(IS_TIM_OCN_POLARITY(TIM_OCInitStruct->TIM_OCNPolarity));
                 assert_param(IS_TIM_OCNIDLE_STATE(TIM_OCInitStruct->TIM_OCNIdleState));
@@ -934,8 +924,7 @@ void TIM_OC4Init(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct)
         /* Set the Output State */
         tmpccer |= (uint32_t)((uint32_t)TIM_OCInitStruct->TIM_OutputState << 12);
 
-        if((TIMx == TIM1) || (TIMx == TIM8))
-        {
+        if((TIMx == TIM1) || (TIMx == TIM8)) {
                 assert_param(IS_TIM_OCIDLE_STATE(TIM_OCInitStruct->TIM_OCIdleState));
                 /* Reset the Output Compare IDLE State */
                 tmpcr2 &=(uint32_t) ~TIM_CR2_OIS4;
@@ -998,8 +987,7 @@ void TIM_OC5Init(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct)
         /* Set the Output State */
         tmpccer |= (uint32_t)((uint32_t)TIM_OCInitStruct->TIM_OutputState << 16);
 
-        if((TIMx == TIM1) || (TIMx == TIM8))
-        {
+        if((TIMx == TIM1) || (TIMx == TIM8)) {
                 assert_param(IS_TIM_OCIDLE_STATE(TIM_OCInitStruct->TIM_OCIdleState));
                 /* Reset the Output Compare IDLE State */
                 tmpcr2 &=(uint32_t) ~TIM_CR2_OIS5;
@@ -1062,8 +1050,7 @@ void TIM_OC6Init(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct)
         /* Set the Output State */
         tmpccer |= (uint32_t)((uint32_t)TIM_OCInitStruct->TIM_OutputState << 20);
 
-        if((TIMx == TIM1) || (TIMx == TIM8))
-        {
+        if((TIMx == TIM1) || (TIMx == TIM8)) {
                 assert_param(IS_TIM_OCIDLE_STATE(TIM_OCInitStruct->TIM_OCIdleState));
                 /* Reset the Output Compare IDLE State */
                 tmpcr2 &=(uint32_t) ~TIM_CR2_OIS6;
@@ -1097,13 +1084,11 @@ void TIM_SelectGC5C1(TIM_TypeDef* TIMx, FunctionalState NewState)
         assert_param(IS_TIM_LIST4_PERIPH(TIMx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Set the GC5C1 Bit */
                 TIMx->CCR5 |= TIM_CCR5_GC5C1;
         }
-        else
-        {
+        else {
                 /* Reset the GC5C1 Bit */
                 TIMx->CCR5 &= (uint32_t)~TIM_CCR5_GC5C1;
         }
@@ -1123,13 +1108,11 @@ void TIM_SelectGC5C2(TIM_TypeDef* TIMx, FunctionalState NewState)
         assert_param(IS_TIM_LIST4_PERIPH(TIMx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Set the GC5C2 Bit */
                 TIMx->CCR5 |= TIM_CCR5_GC5C2;
         }
-        else
-        {
+        else {
                 /* Reset the GC5C2 Bit */
                 TIMx->CCR5 &= (uint32_t)~TIM_CCR5_GC5C2;
         }
@@ -1150,13 +1133,11 @@ void TIM_SelectGC5C3(TIM_TypeDef* TIMx, FunctionalState NewState)
         assert_param(IS_TIM_LIST4_PERIPH(TIMx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Set the GC5C3 Bit */
                 TIMx->CCR5 |= TIM_CCR5_GC5C3;
         }
-        else
-        {
+        else {
                 /* Reset the GC5C3 Bit */
                 TIMx->CCR5 &= (uint32_t)~TIM_CCR5_GC5C3;
         }
@@ -1228,8 +1209,7 @@ void TIM_SelectOCxM(TIM_TypeDef* TIMx, uint16_t TIM_Channel, uint32_t TIM_OCMode
         /* Disable the Channel: Reset the CCxE Bit */
         TIMx->CCER &= (uint16_t) ~tmp1;
 
-        if((TIM_Channel == TIM_Channel_1) ||(TIM_Channel == TIM_Channel_3))
-        {
+        if((TIM_Channel == TIM_Channel_1) ||(TIM_Channel == TIM_Channel_3)) {
                 tmp += (TIM_Channel>>1);
 
                 /* Reset the OCxM bits in the CCMRx register */
@@ -1238,8 +1218,7 @@ void TIM_SelectOCxM(TIM_TypeDef* TIMx, uint16_t TIM_Channel, uint32_t TIM_OCMode
                 /* Configure the OCxM bits in the CCMRx register */
                 *(__IO uint32_t *) tmp |= TIM_OCMode;
         }
-        else
-        {
+        else {
                 tmp += (uint32_t)(TIM_Channel - (uint32_t)4)>> (uint32_t)1;
 
                 /* Reset the OCxM bits in the CCMRx register */
@@ -2381,8 +2360,7 @@ void TIM_ICInit(TIM_TypeDef* TIMx, TIM_ICInitTypeDef* TIM_ICInitStruct)
         assert_param(IS_TIM_IC_PRESCALER(TIM_ICInitStruct->TIM_ICPrescaler));
         assert_param(IS_TIM_IC_FILTER(TIM_ICInitStruct->TIM_ICFilter));
 
-        if (TIM_ICInitStruct->TIM_Channel == TIM_Channel_1)
-        {
+        if (TIM_ICInitStruct->TIM_Channel == TIM_Channel_1) {
                 /* TI1 Configuration */
                 TI1_Config(TIMx, TIM_ICInitStruct->TIM_ICPolarity,
                                 TIM_ICInitStruct->TIM_ICSelection,
@@ -2390,8 +2368,7 @@ void TIM_ICInit(TIM_TypeDef* TIMx, TIM_ICInitTypeDef* TIM_ICInitStruct)
                 /* Set the Input Capture Prescaler value */
                 TIM_SetIC1Prescaler(TIMx, TIM_ICInitStruct->TIM_ICPrescaler);
         }
-        else if (TIM_ICInitStruct->TIM_Channel == TIM_Channel_2)
-        {
+        else if (TIM_ICInitStruct->TIM_Channel == TIM_Channel_2) {
                 /* TI2 Configuration */
                 TI2_Config(TIMx, TIM_ICInitStruct->TIM_ICPolarity,
                                 TIM_ICInitStruct->TIM_ICSelection,
@@ -2399,8 +2376,7 @@ void TIM_ICInit(TIM_TypeDef* TIMx, TIM_ICInitTypeDef* TIM_ICInitStruct)
                 /* Set the Input Capture Prescaler value */
                 TIM_SetIC2Prescaler(TIMx, TIM_ICInitStruct->TIM_ICPrescaler);
         }
-        else if (TIM_ICInitStruct->TIM_Channel == TIM_Channel_3)
-        {
+        else if (TIM_ICInitStruct->TIM_Channel == TIM_Channel_3) {
                 /* TI3 Configuration */
                 TI3_Config(TIMx,  TIM_ICInitStruct->TIM_ICPolarity,
                                 TIM_ICInitStruct->TIM_ICSelection,
@@ -2408,8 +2384,7 @@ void TIM_ICInit(TIM_TypeDef* TIMx, TIM_ICInitTypeDef* TIM_ICInitStruct)
                 /* Set the Input Capture Prescaler value */
                 TIM_SetIC3Prescaler(TIMx, TIM_ICInitStruct->TIM_ICPrescaler);
         }
-        else
-        {
+        else {
                 /* TI4 Configuration */
                 TI4_Config(TIMx, TIM_ICInitStruct->TIM_ICPolarity,
                                 TIM_ICInitStruct->TIM_ICSelection,
@@ -2453,25 +2428,20 @@ void TIM_PWMIConfig(TIM_TypeDef* TIMx, TIM_ICInitTypeDef* TIM_ICInitStruct)
         assert_param(IS_TIM_LIST2_PERIPH(TIMx));
 
         /* Select the Opposite Input Polarity */
-        if (TIM_ICInitStruct->TIM_ICPolarity == TIM_ICPolarity_Rising)
-        {
+        if (TIM_ICInitStruct->TIM_ICPolarity == TIM_ICPolarity_Rising) {
                 icoppositepolarity = TIM_ICPolarity_Falling;
         }
-        else
-        {
+        else {
                 icoppositepolarity = TIM_ICPolarity_Rising;
         }
         /* Select the Opposite Input */
-        if (TIM_ICInitStruct->TIM_ICSelection == TIM_ICSelection_DirectTI)
-        {
+        if (TIM_ICInitStruct->TIM_ICSelection == TIM_ICSelection_DirectTI) {
                 icoppositeselection = TIM_ICSelection_IndirectTI;
         }
-        else
-        {
+        else {
                 icoppositeselection = TIM_ICSelection_DirectTI;
         }
-        if (TIM_ICInitStruct->TIM_Channel == TIM_Channel_1)
-        {
+        if (TIM_ICInitStruct->TIM_Channel == TIM_Channel_1) {
                 /* TI1 Configuration */
                 TI1_Config(TIMx, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection,
                                 TIM_ICInitStruct->TIM_ICFilter);
@@ -2482,8 +2452,7 @@ void TIM_PWMIConfig(TIM_TypeDef* TIMx, TIM_ICInitTypeDef* TIM_ICInitStruct)
                 /* Set the Input Capture Prescaler value */
                 TIM_SetIC2Prescaler(TIMx, TIM_ICInitStruct->TIM_ICPrescaler);
         }
-        else
-        { 
+        else { 
                 /* TI2 Configuration */
                 TI2_Config(TIMx, TIM_ICInitStruct->TIM_ICPolarity, TIM_ICInitStruct->TIM_ICSelection,
                                 TIM_ICInitStruct->TIM_ICFilter);
@@ -2768,13 +2737,11 @@ void TIM_Break1Cmd(TIM_TypeDef* TIMx, FunctionalState NewState)
         assert_param(IS_TIM_LIST6_PERIPH(TIMx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the Break1 */
                 TIMx->BDTR |= TIM_BDTR_BKE;
         }
-        else
-        {
+        else {
                 /* Disable the Break1 */
                 TIMx->BDTR &= (uint32_t)~TIM_BDTR_BKE;
         } 
@@ -2793,13 +2760,11 @@ void TIM_Break2Cmd(TIM_TypeDef* TIMx, FunctionalState NewState)
         assert_param(IS_TIM_LIST4_PERIPH(TIMx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the Break1 */
                 TIMx->BDTR |= TIM_BDTR_BK2E;
         }
-        else
-        {
+        else {
                 /* Disable the Break1 */
                 TIMx->BDTR &= (uint32_t)~TIM_BDTR_BK2E;
         }
@@ -2836,13 +2801,11 @@ void TIM_CtrlPWMOutputs(TIM_TypeDef* TIMx, FunctionalState NewState)
         assert_param(IS_TIM_LIST6_PERIPH(TIMx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the TIM Main Output */
                 TIMx->BDTR |= TIM_BDTR_MOE;
         }
-        else
-        {
+        else {
                 /* Disable the TIM Main Output */
                 TIMx->BDTR &= (uint16_t)~TIM_BDTR_MOE;
         }  
@@ -2861,13 +2824,11 @@ void TIM_SelectCOM(TIM_TypeDef* TIMx, FunctionalState NewState)
         assert_param(IS_TIM_LIST6_PERIPH(TIMx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Set the COM Bit */
                 TIMx->CR2 |= TIM_CR2_CCUS;
         }
-        else
-        {
+        else {
                 /* Reset the COM Bit */
                 TIMx->CR2 &= (uint16_t)~TIM_CR2_CCUS;
         }
@@ -2885,13 +2846,11 @@ void TIM_CCPreloadControl(TIM_TypeDef* TIMx, FunctionalState NewState)
         /* Check the parameters */
         assert_param(IS_TIM_LIST6_PERIPH(TIMx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Set the CCPC Bit */
                 TIMx->CR2 |= TIM_CR2_CCPC;
         }
-        else
-        {
+        else {
                 /* Reset the CCPC Bit */
                 TIMx->CR2 &= (uint16_t)~TIM_CR2_CCPC;
         }
@@ -2944,13 +2903,11 @@ void TIM_ITConfig(TIM_TypeDef* TIMx, uint16_t TIM_IT, FunctionalState NewState)
         assert_param(IS_TIM_IT(TIM_IT));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the Interrupt sources */
                 TIMx->DIER |= TIM_IT;
         }
-        else
-        {
+        else {
                 /* Disable the Interrupt sources */
                 TIMx->DIER &= (uint16_t)~TIM_IT;
         }
@@ -3018,12 +2975,10 @@ FlagStatus TIM_GetFlagStatus(TIM_TypeDef* TIMx, uint32_t TIM_FLAG)
         assert_param(IS_TIM_GET_FLAG(TIM_FLAG));
 
 
-        if ((TIMx->SR & TIM_FLAG) != RESET)
-        {
+        if ((TIMx->SR & TIM_FLAG) != RESET) {
                 bitstatus = SET;
         }
-        else
-        {
+        else {
                 bitstatus = RESET;
         }
         return bitstatus;
@@ -3093,12 +3048,10 @@ ITStatus TIM_GetITStatus(TIM_TypeDef* TIMx, uint16_t TIM_IT)
         itstatus = TIMx->SR & TIM_IT;
 
         itenable = TIMx->DIER & TIM_IT;
-        if ((itstatus != (uint16_t)RESET) && (itenable != (uint16_t)RESET))
-        {
+        if ((itstatus != (uint16_t)RESET) && (itenable != (uint16_t)RESET)) {
                 bitstatus = SET;
         }
-        else
-        {
+        else {
                 bitstatus = RESET;
         }
         return bitstatus;
@@ -3194,13 +3147,11 @@ void TIM_DMACmd(TIM_TypeDef* TIMx, uint16_t TIM_DMASource, FunctionalState NewSt
         assert_param(IS_TIM_DMA_SOURCE(TIM_DMASource));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the DMA sources */
                 TIMx->DIER |= TIM_DMASource; 
         }
-        else
-        {
+        else {
                 /* Disable the DMA sources */
                 TIMx->DIER &= (uint16_t)~TIM_DMASource;
         }
@@ -3219,13 +3170,11 @@ void TIM_SelectCCDMA(TIM_TypeDef* TIMx, FunctionalState NewState)
         assert_param(IS_TIM_LIST1_PERIPH(TIMx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Set the CCDS Bit */
                 TIMx->CR2 |= TIM_CR2_CCDS;
         }
-        else
-        {
+        else {
                 /* Reset the CCDS Bit */
                 TIMx->CR2 &= (uint16_t)~TIM_CR2_CCDS;
         }
@@ -3312,12 +3261,10 @@ void TIM_TIxExternalClockConfig(TIM_TypeDef* TIMx, uint16_t TIM_TIxExternalCLKSo
         assert_param(IS_TIM_IC_FILTER(ICFilter));
 
         /* Configure the Timer Input Clock Source */
-        if (TIM_TIxExternalCLKSource == TIM_TIxExternalCLK1Source_TI2)
-        {
+        if (TIM_TIxExternalCLKSource == TIM_TIxExternalCLK1Source_TI2) {
                 TI2_Config(TIMx, TIM_ICPolarity, TIM_ICSelection_DirectTI, ICFilter);
         }
-        else
-        {
+        else {
                 TI1_Config(TIMx, TIM_ICPolarity, TIM_ICSelection_DirectTI, ICFilter);
         }
         /* Select the Trigger source */
@@ -3734,13 +3681,11 @@ void TIM_SelectHallSensor(TIM_TypeDef* TIMx, FunctionalState NewState)
         assert_param(IS_TIM_LIST2_PERIPH(TIMx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Set the TI1S Bit */
                 TIMx->CR2 |= TIM_CR2_TI1S;
         }
-        else
-        {
+        else {
                 /* Reset the TI1S Bit */
                 TIMx->CR2 &= (uint16_t)~TIM_CR2_TI1S;
         }
