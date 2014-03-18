@@ -222,13 +222,11 @@ void PWR_WakeUpPinCmd(uint32_t PWR_WakeUpPin, FunctionalState NewState)
         assert_param(IS_PWR_WAKEUP_PIN(PWR_WakeUpPin));  
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the EWUPx pin */
                 PWR->CSR |= PWR_WakeUpPin;
         }
-        else
-        {
+        else {
                 /* Disable the EWUPx pin */
                 PWR->CSR &= ~PWR_WakeUpPin;
         }
@@ -357,13 +355,11 @@ the selected edges (falling, rising or falling and rising)
                                 SCB->SCR &= (uint32_t)~((uint32_t)SCB_SCR_SLEEPDEEP_Msk);
 
                                 /* Select SLEEP mode entry -------------------------------------------------*/
-                                if(PWR_SLEEPEntry == PWR_SLEEPEntry_WFI)
-                                {   
+                                if(PWR_SLEEPEntry == PWR_SLEEPEntry_WFI) {   
                                         /* Request Wait For Interrupt */
                                         __WFI();
                                 }
-                                else
-                                {
+                                else {
                                         /* Request Wait For Event */
                                         __WFE();
                                 }
@@ -411,13 +407,11 @@ the selected edges (falling, rising or falling and rising)
                         SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 
                         /* Select STOP mode entry --------------------------------------------------*/
-                        if(PWR_STOPEntry == PWR_STOPEntry_WFI)
-                        {   
+                        if(PWR_STOPEntry == PWR_STOPEntry_WFI) {   
                                 /* Request Wait For Interrupt */
                                 __WFI();
                         }
-                        else
-                        {
+                        else {
                                 /* Request Wait For Event */
                                 __WFE();
                         }
@@ -491,12 +485,10 @@ FlagStatus PWR_GetFlagStatus(uint32_t PWR_FLAG)
         /* Check the parameters */
         assert_param(IS_PWR_GET_FLAG(PWR_FLAG));
 
-        if ((PWR->CSR & PWR_FLAG) != (uint32_t)RESET)
-        {
+        if ((PWR->CSR & PWR_FLAG) != (uint32_t)RESET) {
                 bitstatus = SET;
         }
-        else
-        {
+        else {
                 bitstatus = RESET;
         }
         /* Return the flag status */

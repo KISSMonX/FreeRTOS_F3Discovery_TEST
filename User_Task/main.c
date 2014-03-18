@@ -60,7 +60,9 @@ static void prvSetupHardware( void )
 {
 	// 内部外设结构体变量
 	GPIO_InitTypeDef  	GPIO_InitStructure;	
-
+	NVIC_InitTypeDef	NVIC_InitStructure;
+	
+	
 	//外设时钟配置---ENABLE
 	RCC_AHBPeriphClockCmd(	RCC_AHBPeriph_GPIOA |		// GPIOA模块时钟
 				RCC_AHBPeriph_GPIOE, ENABLE);	// GPIOE模块时钟											
@@ -84,6 +86,12 @@ static void prvSetupHardware( void )
 	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_0;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);	
+	
+	// 系统中断初始化 -> 系统所用中断
+	NVIC_InitStructure.NVIC_IRQChannel = SVCall_IRQn;	
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);	
 }
 
 
