@@ -78,7 +78,7 @@ void prvButtonCheckTask(void *pvParameters)
                 /* 读取按键状态 */
                 if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == pdTRUE)//如果检测到按键按下
                 {
-                        if (bounce_count++ == 5)//按键防抖
+                        if (bounce_count++ == 6)//按键防抖
                         {	
 				// 如果不清零的话, 就得加到溢出然后再重新加到才行, 结果就是会很迟钝
 				bounce_count = 0;	
