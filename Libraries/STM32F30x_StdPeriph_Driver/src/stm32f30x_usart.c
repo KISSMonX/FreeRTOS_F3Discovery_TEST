@@ -1735,12 +1735,10 @@ detection interrupt.
                                 itpos = USART_IT & IT_MASK;
                                 itmask = (((uint32_t)0x01) << itpos);
 
-                                if (usartreg == 0x02) /* The IT is in CR2 register */
-                                {
+                                if (usartreg == 0x02) { /* The IT is in CR2 register */
                                         usartxbase += 0x04;
                                 }
-                                else if (usartreg == 0x03) /* The IT is in CR3 register */
-                                {
+                                else if (usartreg == 0x03) { /* The IT is in CR3 register */
                                         usartxbase += 0x08;
                                 }
                                 else /* The IT is in CR1 register */

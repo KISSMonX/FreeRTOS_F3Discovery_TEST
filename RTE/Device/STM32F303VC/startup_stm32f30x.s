@@ -83,7 +83,7 @@ __Vectors       DCD     __initial_sp               ; Top of Stack
                 ; External Interrupts
                 DCD     WWDG_IRQHandler                   ; Window WatchDog                                        
                 DCD     PVD_IRQHandler                    ; PVD through EXTI Line detection                        
-                DCD     TAMPER_STAMP_IRQHandler             ; Tamper and TimeStamps through the EXTI line            
+                DCD     TAMPER_STAMP_IRQHandler           ; Tamper and TimeStamps through the EXTI line            
                 DCD     RTC_WKUP_IRQHandler               ; RTC Wakeup through the EXTI line                       
                 DCD     FLASH_IRQHandler                  ; FLASH                                           
                 DCD     RCC_IRQHandler                    ; RCC                                             

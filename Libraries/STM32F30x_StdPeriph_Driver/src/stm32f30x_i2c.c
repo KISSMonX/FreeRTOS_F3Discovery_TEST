@@ -357,13 +357,11 @@ void I2C_StretchClockCmd(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable clock stretching */
                 I2Cx->CR1 &= (uint32_t)~((uint32_t)I2C_CR1_NOSTRETCH);    
         }
-        else
-        {
+        else {
                 /* Disable clock stretching  */
                 I2Cx->CR1 |= I2C_CR1_NOSTRETCH;
         }
@@ -382,13 +380,11 @@ void I2C_StopModeCmd(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable wakeup from stop mode */
                 I2Cx->CR1 |= I2C_CR1_WUPEN;   
         }
-        else
-        {
+        else {
                 /* Disable wakeup from stop mode */    
                 I2Cx->CR1 &= (uint32_t)~((uint32_t)I2C_CR1_WUPEN); 
         }
@@ -407,13 +403,11 @@ void I2C_DualAddressCmd(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable own address 2 */
                 I2Cx->OAR2 |= I2C_OAR2_OA2EN;
         }
-        else
-        {
+        else {
                 /* Disable own address 2 */
                 I2Cx->OAR2 &= (uint32_t)~((uint32_t)I2C_OAR2_OA2EN);
         }
@@ -471,13 +465,11 @@ void I2C_GeneralCallCmd(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable general call mode */
                 I2Cx->CR1 |= I2C_CR1_GCEN;
         }
-        else
-        {
+        else {
                 /* Disable general call mode */
                 I2Cx->CR1 &= (uint32_t)~((uint32_t)I2C_CR1_GCEN);
         }
@@ -496,13 +488,11 @@ void I2C_SlaveByteControlCmd(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable slave byte control */
                 I2Cx->CR1 |= I2C_CR1_SBC;
         }
-        else
-        {
+        else {
                 /* Disable slave byte control */
                 I2Cx->CR1 &= (uint32_t)~((uint32_t)I2C_CR1_SBC);
         }
@@ -550,13 +540,11 @@ void I2C_10BitAddressingModeCmd(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable 10-bit addressing mode */
                 I2Cx->CR2 |= I2C_CR2_ADD10;
         }
-        else
-        {
+        else {
                 /* Disable 10-bit addressing mode */
                 I2Cx->CR2 &= (uint32_t)~((uint32_t)I2C_CR2_ADD10);
         }
@@ -615,13 +603,11 @@ void I2C_AutoEndCmd(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable Auto end mode */
                 I2Cx->CR2 |= I2C_CR2_AUTOEND;
         }
-        else
-        {
+        else {
                 /* Disable Auto end mode */
                 I2Cx->CR2 &= (uint32_t)~((uint32_t)I2C_CR2_AUTOEND);
         }
@@ -640,13 +626,11 @@ void I2C_ReloadCmd(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable Auto Reload mode */
                 I2Cx->CR2 |= I2C_CR2_RELOAD;
         }
-        else
-        {
+        else {
                 /* Disable Auto Reload mode */
                 I2Cx->CR2 &= (uint32_t)~((uint32_t)I2C_CR2_RELOAD);
         }
@@ -694,13 +678,11 @@ void I2C_MasterRequestConfig(I2C_TypeDef* I2Cx, uint16_t I2C_Direction)
         assert_param(IS_I2C_DIRECTION(I2C_Direction));
 
         /* Test on the direction to set/reset the read/write bit */
-        if (I2C_Direction == I2C_Direction_Transmitter)
-        {
+        if (I2C_Direction == I2C_Direction_Transmitter) {
                 /* Request a write Transfer */
                 I2Cx->CR2 &= (uint32_t)~((uint32_t)I2C_CR2_RD_WRN);
         }
-        else
-        {
+        else {
                 /* Request a read Transfer */
                 I2Cx->CR2 |= I2C_CR2_RD_WRN;
         }
@@ -719,13 +701,11 @@ void I2C_GenerateSTART(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Generate a START condition */
                 I2Cx->CR2 |= I2C_CR2_START;
         }
-        else
-        {
+        else {
                 /* Disable the START condition generation */
                 I2Cx->CR2 &= (uint32_t)~((uint32_t)I2C_CR2_START);
         }
@@ -744,13 +724,11 @@ void I2C_GenerateSTOP(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Generate a STOP condition */
                 I2Cx->CR2 |= I2C_CR2_STOP;
         }
-        else
-        {
+        else {
                 /* Disable the STOP condition generation */
                 I2Cx->CR2 &= (uint32_t)~((uint32_t)I2C_CR2_STOP);
         }
@@ -771,13 +749,11 @@ void I2C_10BitAddressHeaderCmd(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable 10-bit header only mode */
                 I2Cx->CR2 |= I2C_CR2_HEAD10R;
         }
-        else
-        {
+        else {
                 /* Disable 10-bit header only mode */
                 I2Cx->CR2 &= (uint32_t)~((uint32_t)I2C_CR2_HEAD10R);
         }
@@ -796,13 +772,11 @@ void I2C_AcknowledgeConfig(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable ACK generation */
                 I2Cx->CR2 &= (uint32_t)~((uint32_t)I2C_CR2_NACK);    
         }
-        else
-        {
+        else {
                 /* Enable NACK generation */
                 I2Cx->CR2 |= I2C_CR2_NACK;
         }
@@ -839,13 +813,11 @@ uint16_t I2C_GetTransferDirection(I2C_TypeDef* I2Cx)
         tmpreg = (uint32_t)(I2Cx->ISR & I2C_ISR_DIR);
 
         /* If write transfer is requested */
-        if (tmpreg == 0)
-        {
+        if (tmpreg == 0) {
                 /* write transfer is requested */
                 direction = I2C_Direction_Transmitter;
         }
-        else
-        {
+        else {
                 /* Read transfer is requested */
                 direction = I2C_Direction_Receiver;
         }  
@@ -948,13 +920,11 @@ void I2C_SMBusAlertCmd(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable SMBus alert */
                 I2Cx->CR1 |= I2C_CR1_ALERTEN;   
         }
-        else
-        {
+        else {
                 /* Disable SMBus alert */    
                 I2Cx->CR1 &= (uint32_t)~((uint32_t)I2C_CR1_ALERTEN); 
         }
@@ -973,13 +943,11 @@ void I2C_ClockTimeoutCmd(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable Clock Timeout */
                 I2Cx->TIMEOUTR |= I2C_TIMEOUTR_TIMOUTEN;   
         }
-        else
-        {
+        else {
                 /* Disable Clock Timeout */    
                 I2Cx->TIMEOUTR &= (uint32_t)~((uint32_t)I2C_TIMEOUTR_TIMOUTEN); 
         }
@@ -998,13 +966,11 @@ void I2C_ExtendedClockTimeoutCmd(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable Clock Timeout */
                 I2Cx->TIMEOUTR |= I2C_TIMEOUTR_TEXTEN;   
         }
-        else
-        {
+        else {
                 /* Disable Clock Timeout */    
                 I2Cx->TIMEOUTR &= (uint32_t)~((uint32_t)I2C_TIMEOUTR_TEXTEN); 
         }
@@ -1024,13 +990,11 @@ void I2C_IdleClockTimeoutCmd(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable Clock Timeout */
                 I2Cx->TIMEOUTR |= I2C_TIMEOUTR_TIDLE;   
         }
-        else
-        {
+        else {
                 /* Disable Clock Timeout */    
                 I2Cx->TIMEOUTR &= (uint32_t)~((uint32_t)I2C_TIMEOUTR_TIDLE); 
         }
@@ -1104,13 +1068,11 @@ void I2C_CalculatePEC(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable PEC calculation */
                 I2Cx->CR1 |= I2C_CR1_PECEN;   
         }
-        else
-        {
+        else {
                 /* Disable PEC calculation */    
                 I2Cx->CR1 &= (uint32_t)~((uint32_t)I2C_CR1_PECEN); 
         }
@@ -1129,13 +1091,11 @@ void I2C_PECRequestCmd(I2C_TypeDef* I2Cx, FunctionalState NewState)
         assert_param(IS_I2C_ALL_PERIPH(I2Cx));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable PEC transmission/reception request */
                 I2Cx->CR1 |= I2C_CR2_PECBYTE;   
         }
-        else
-        {
+        else {
                 /* Disable PEC transmission/reception request */    
                 I2Cx->CR1 &= (uint32_t)~((uint32_t)I2C_CR2_PECBYTE); 
         }
@@ -1299,13 +1259,11 @@ void I2C_DMACmd(I2C_TypeDef* I2Cx, uint32_t I2C_DMAReq, FunctionalState NewState
         assert_param(IS_FUNCTIONAL_STATE(NewState));
         assert_param(IS_I2C_DMA_REQ(I2C_DMAReq));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the selected I2C DMA requests */
                 I2Cx->CR1 |= I2C_DMAReq;
         }
-        else
-        {
+        else {
                 /* Disable the selected I2C DMA requests */
                 I2Cx->CR1 &= (uint32_t)~I2C_DMAReq;
         }
@@ -1427,13 +1385,11 @@ the communication: Polling mode, Interrupt mode or DMA mode(refer I2C_Group6) .
                         /* Get flag status */
                         tmpreg &= I2C_FLAG;
 
-                        if(tmpreg != 0)
-                        {
+                        if(tmpreg != 0) {
                                 /* I2C_FLAG is set */
                                 bitstatus = SET;
                         }
-                        else
-                        {
+                        else {
                                 /* I2C_FLAG is reset */
                                 bitstatus = RESET;
                         }
@@ -1498,17 +1454,14 @@ the communication: Polling mode, Interrupt mode or DMA mode(refer I2C_Group6) .
 
                 /* Check if the interrupt source is enabled or not */
                 /* If Error interrupt */
-                if((uint32_t)(I2C_IT & ERROR_IT_MASK))
-                {
+                if((uint32_t)(I2C_IT & ERROR_IT_MASK)) {
                         enablestatus = (uint32_t)((I2C_CR1_ERRIE) & (I2Cx->CR1));
                 }
                 /* If TC interrupt */
-                else if((uint32_t)(I2C_IT & TC_IT_MASK))
-                {
+                else if((uint32_t)(I2C_IT & TC_IT_MASK)) {
                         enablestatus = (uint32_t)((I2C_CR1_TCIE) & (I2Cx->CR1));
                 }
-                else
-                {
+                else {
                         enablestatus = (uint32_t)((I2C_IT) & (I2Cx->CR1));
                 }
 
@@ -1519,13 +1472,11 @@ the communication: Polling mode, Interrupt mode or DMA mode(refer I2C_Group6) .
                 tmpreg &= I2C_IT;
 
                 /* Check the status of the specified I2C flag */
-                if((tmpreg != RESET) && enablestatus)
-                {
+                if((tmpreg != RESET) && enablestatus) {
                         /* I2C_IT is set */
                         bitstatus = SET;
                 }
-                else
-                {
+                else {
                         /* I2C_IT is reset */
                         bitstatus = RESET;
                 }

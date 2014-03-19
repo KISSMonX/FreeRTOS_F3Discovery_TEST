@@ -87,12 +87,12 @@ extern "C" {
 #define portDOUBLE		double
 #define portLONG		long
 #define portSHORT		short
-#define portSTACK_TYPE	uint32_t
-#define portBASE_TYPE	long
+#define portSTACK_TYPE		uint32_t
+#define portBASE_TYPE		long
 
-typedef portSTACK_TYPE StackType_t;
-typedef long BaseType_t;
-typedef unsigned long UBaseType_t;
+typedef portSTACK_TYPE 		StackType_t;
+typedef long 			BaseType_t;
+typedef unsigned long 		UBaseType_t;
 
 #if( configUSE_16_BIT_TICKS == 1 )
 	typedef uint16_t TickType_t;
@@ -113,7 +113,7 @@ typedef unsigned long UBaseType_t;
 extern void vPortYield( void );
 #define portNVIC_INT_CTRL_REG		( * ( ( volatile uint32_t * ) 0xe000ed04 ) )
 #define portNVIC_PENDSVSET_BIT		( 1UL << 28UL )
-#define portYIELD()					vPortYield()
+#define portYIELD()			vPortYield()
 #define portEND_SWITCHING_ISR( xSwitchRequired ) if( xSwitchRequired ) portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT
 #define portYIELD_FROM_ISR( x ) portEND_SWITCHING_ISR( x )
 /*-----------------------------------------------------------*/
@@ -124,11 +124,11 @@ extern void vPortClearInterruptMask( uint32_t ulNewMask );
 extern void vPortEnterCritical( void );
 extern void vPortExitCritical( void );
 
-#define portDISABLE_INTERRUPTS()				ulPortSetInterruptMask()
-#define portENABLE_INTERRUPTS()					vPortClearInterruptMask( 0 )
-#define portENTER_CRITICAL()					vPortEnterCritical()
-#define portEXIT_CRITICAL()						vPortExitCritical()
-#define portSET_INTERRUPT_MASK_FROM_ISR()		ulPortSetInterruptMask()
+#define portDISABLE_INTERRUPTS()		ulPortSetInterruptMask()
+#define portENABLE_INTERRUPTS()			vPortClearInterruptMask( 0 )
+#define portENTER_CRITICAL()			vPortEnterCritical()
+#define portEXIT_CRITICAL()			vPortExitCritical()
+#define portSET_INTERRUPT_MASK_FROM_ISR()	ulPortSetInterruptMask()
 #define portCLEAR_INTERRUPT_MASK_FROM_ISR(x)	vPortClearInterruptMask(x)
 
 /*-----------------------------------------------------------*/
@@ -177,6 +177,10 @@ not necessary for to use this port.  They are defined so the common demo files
 #ifdef __cplusplus
 }
 #endif
+
+#define vPortSVCHandler      SVC_Handler
+#define xPortSysTickHandler  SysTick_Handler
+#define xPortPendSVHandler   PendSV_Handler
 
 #endif /* PORTMACRO_H */
 

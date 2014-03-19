@@ -336,12 +336,10 @@ ErrorStatus RTC_DeInit(void)
         RTC->WPR = 0x53;
 
         /* Set Initialization mode */
-        if (RTC_EnterInitMode() == ERROR)
-        {
+        if (RTC_EnterInitMode() == ERROR) {
                 status = ERROR;
         }  
-        else
-        {
+        else {
                 /* Reset TR, DR and CR registers */
                 RTC->TR = (uint32_t)0x00000000;
                 RTC->DR = (uint32_t)0x00002101;
@@ -350,18 +348,15 @@ ErrorStatus RTC_DeInit(void)
                 RTC->CR &= (uint32_t)0x00000007;
 
                 /* Wait till RTC WUTWF flag is set and if Time out is reached exit */
-                do
-                {
+                do {
                         wutwfstatus = RTC->ISR & RTC_ISR_WUTWF;
                         wutcounter++;  
                 } while((wutcounter != INITMODE_TIMEOUT) && (wutwfstatus == 0x00));
 
-                if ((RTC->ISR & RTC_ISR_WUTWF) == RESET)
-                {
+                if ((RTC->ISR & RTC_ISR_WUTWF) == RESET) {
                         status = ERROR;
                 }
-                else
-                {
+                else {
                         /* Reset all RTC CR register bits */
                         RTC->CR        &= (uint32_t)0x00000000;
                         RTC->WUTR      = (uint32_t)0x0000FFFF;
@@ -380,12 +375,10 @@ ErrorStatus RTC_DeInit(void)
                         RTC->TAFCR = 0x00000000;
 
                         /* Wait till the RTC RSF flag is set */
-                        if (RTC_WaitForSynchro() == ERROR)
-                        {
+                        if (RTC_WaitForSynchro() == ERROR) {
                                 status = ERROR;
                         }
-                        else
-                        {
+                        else {
                                 status = SUCCESS;
                         }
                 }
@@ -422,12 +415,10 @@ ErrorStatus RTC_Init(RTC_InitTypeDef* RTC_InitStruct)
         RTC->WPR = 0x53;
 
         /* Set Initialization mode */
-        if (RTC_EnterInitMode() == ERROR)
-        {
+        if (RTC_EnterInitMode() == ERROR) {
                 status = ERROR;
         } 
-        else
-        {
+        else {
                 /* Clear RTC CR FMT Bit */
                 RTC->CR &= ((uint32_t)~(RTC_CR_FMT));
                 /* Set RTC_CR register */
@@ -481,13 +472,11 @@ void RTC_WriteProtectionCmd(FunctionalState NewState)
         /* Check the parameters */
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the write protection for RTC registers */
                 RTC->WPR = 0xFF;   
         }
-        else
-        {
+        else {
                 /* Disable the write protection for RTC registers */
                 RTC->WPR = 0xCA;
                 RTC->WPR = 0x53;    
@@ -510,29 +499,24 @@ ErrorStatus RTC_EnterInitMode(void)
         uint32_t initstatus = 0x00;
 
         /* Check if the Initialization mode is set */
-        if ((RTC->ISR & RTC_ISR_INITF) == (uint32_t)RESET)
-        {
+        if ((RTC->ISR & RTC_ISR_INITF) == (uint32_t)RESET) {
                 /* Set the Initialization mode */
                 RTC->ISR = (uint32_t)RTC_INIT_MASK;
 
                 /* Wait till RTC is in INIT state and if Time out is reached exit */
-                do
-                {
+                do {
                         initstatus = RTC->ISR & RTC_ISR_INITF;
                         initcounter++;  
                 } while((initcounter != INITMODE_TIMEOUT) && (initstatus == 0x00));
 
-                if ((RTC->ISR & RTC_ISR_INITF) != RESET)
-                {
+                if ((RTC->ISR & RTC_ISR_INITF) != RESET) {
                         status = SUCCESS;
                 }
-                else
-                {
+                else {
                         status = ERROR;
                 }        
         }
-        else
-        {
+        else {
                 status = SUCCESS;  
         } 
 
@@ -576,13 +560,11 @@ ErrorStatus RTC_WaitForSynchro(void)
         ErrorStatus status = ERROR;
         uint32_t synchrostatus = 0x00;
 
-        if ((RTC->CR & RTC_CR_BYPSHAD) != RESET)
-        {
+        if ((RTC->CR & RTC_CR_BYPSHAD) != RESET) {
                 /* Bypass shadow mode */
                 status = SUCCESS;
         }
-        else
-        {
+        else {
                 /* Disable the write protection for RTC registers */
                 RTC->WPR = 0xCA;
                 RTC->WPR = 0x53;
@@ -597,12 +579,10 @@ ErrorStatus RTC_WaitForSynchro(void)
                         synchrocounter++;  
                 } while((synchrocounter != SYNCHRO_TIMEOUT) && (synchrostatus == 0x00));
 
-                if ((RTC->ISR & RTC_ISR_RSF) != RESET)
-                {
+                if ((RTC->ISR & RTC_ISR_RSF) != RESET) {
                         status = SUCCESS;
                 }
-                else
-                {
+                else {
                         status = ERROR;
                 }
 
@@ -633,19 +613,15 @@ ErrorStatus RTC_RefClockCmd(FunctionalState NewState)
         RTC->WPR = 0x53;
 
         /* Set Initialization mode */
-        if (RTC_EnterInitMode() == ERROR)
-        {
+        if (RTC_EnterInitMode() == ERROR) {
                 status = ERROR;
         }
-        else
-        {
-                if (NewState != DISABLE)
-                {
+        else {
+                if (NewState != DISABLE) {
                         /* Enable the RTC reference clock detection */
                         RTC->CR |= RTC_CR_REFCKON;   
                 }
-                else
-                {
+                else {
                         /* Disable the RTC reference clock detection */
                         RTC->CR &= ~RTC_CR_REFCKON;    
                 }
@@ -678,13 +654,11 @@ void RTC_BypassShadowCmd(FunctionalState NewState)
         RTC->WPR = 0xCA;
         RTC->WPR = 0x53;
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Set the BYPSHAD bit */
                 RTC->CR |= (uint8_t)RTC_CR_BYPSHAD;
         }
-        else
-        {
+        else {
                 /* Reset the BYPSHAD bit */
                 RTC->CR &= (uint8_t)~RTC_CR_BYPSHAD;
         }
@@ -731,31 +705,25 @@ ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct)
         /* Check the parameters */
         assert_param(IS_RTC_FORMAT(RTC_Format));
 
-        if (RTC_Format == RTC_Format_BIN)
-        {
-                if ((RTC->CR & RTC_CR_FMT) != (uint32_t)RESET)
-                {
+        if (RTC_Format == RTC_Format_BIN) {
+                if ((RTC->CR & RTC_CR_FMT) != (uint32_t)RESET) {
                         assert_param(IS_RTC_HOUR12(RTC_TimeStruct->RTC_Hours));
                         assert_param(IS_RTC_H12(RTC_TimeStruct->RTC_H12));
                 } 
-                else
-                {
+                else {
                         RTC_TimeStruct->RTC_H12 = 0x00;
                         assert_param(IS_RTC_HOUR24(RTC_TimeStruct->RTC_Hours));
                 }
                 assert_param(IS_RTC_MINUTES(RTC_TimeStruct->RTC_Minutes));
                 assert_param(IS_RTC_SECONDS(RTC_TimeStruct->RTC_Seconds));
         }
-        else
-        {
-                if ((RTC->CR & RTC_CR_FMT) != (uint32_t)RESET)
-                {
+        else {
+                if ((RTC->CR & RTC_CR_FMT) != (uint32_t)RESET) {
                         tmpreg = RTC_Bcd2ToByte(RTC_TimeStruct->RTC_Hours);
                         assert_param(IS_RTC_HOUR12(tmpreg));
                         assert_param(IS_RTC_H12(RTC_TimeStruct->RTC_H12)); 
                 } 
-                else
-                {
+                else {
                         RTC_TimeStruct->RTC_H12 = 0x00;
                         assert_param(IS_RTC_HOUR24(RTC_Bcd2ToByte(RTC_TimeStruct->RTC_Hours)));
                 }
@@ -764,15 +732,13 @@ ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct)
         }
 
         /* Check the input parameters format */
-        if (RTC_Format != RTC_Format_BIN)
-        {
+        if (RTC_Format != RTC_Format_BIN) {
                 tmpreg = (((uint32_t)(RTC_TimeStruct->RTC_Hours) << 16) | \
                                 ((uint32_t)(RTC_TimeStruct->RTC_Minutes) << 8) | \
                                 ((uint32_t)RTC_TimeStruct->RTC_Seconds) | \
                                 ((uint32_t)(RTC_TimeStruct->RTC_H12) << 16)); 
         }  
-        else
-        {
+        else {
                 tmpreg = (uint32_t)(((uint32_t)RTC_ByteToBcd2(RTC_TimeStruct->RTC_Hours) << 16) | \
                                 ((uint32_t)RTC_ByteToBcd2(RTC_TimeStruct->RTC_Minutes) << 8) | \
                                 ((uint32_t)RTC_ByteToBcd2(RTC_TimeStruct->RTC_Seconds)) | \
@@ -784,12 +750,10 @@ ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct)
         RTC->WPR = 0x53;
 
         /* Set Initialization mode */
-        if (RTC_EnterInitMode() == ERROR)
-        {
+        if (RTC_EnterInitMode() == ERROR) {
                 status = ERROR;
         } 
-        else
-        {
+        else {
                 /* Set the RTC_TR register */
                 RTC->TR = (uint32_t)(tmpreg & RTC_TR_RESERVED_MASK);
 
@@ -797,19 +761,15 @@ ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct)
                 RTC_ExitInitMode(); 
 
                 /* If  RTC_CR_BYPSHAD bit = 0, wait for synchro else this check is not needed */
-                if ((RTC->CR & RTC_CR_BYPSHAD) == RESET)
-                {
-                        if (RTC_WaitForSynchro() == ERROR)
-                        {
+                if ((RTC->CR & RTC_CR_BYPSHAD) == RESET) {
+                        if (RTC_WaitForSynchro() == ERROR) {
                                 status = ERROR;
                         }
-                        else
-                        {
+                        else {
                                 status = SUCCESS;
                         }
                 }
-                else
-                {
+                else {
                         status = SUCCESS;
                 }
 
@@ -863,8 +823,7 @@ void RTC_GetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct)
         RTC_TimeStruct->RTC_H12 = (uint8_t)((tmpreg & (RTC_TR_PM)) >> 16);  
 
         /* Check the input parameters format */
-        if (RTC_Format == RTC_Format_BIN)
-        {
+        if (RTC_Format == RTC_Format_BIN) {
                 /* Convert the structure parameters to Binary format */
                 RTC_TimeStruct->RTC_Hours = (uint8_t)RTC_Bcd2ToByte(RTC_TimeStruct->RTC_Hours);
                 RTC_TimeStruct->RTC_Minutes = (uint8_t)RTC_Bcd2ToByte(RTC_TimeStruct->RTC_Minutes);
@@ -912,18 +871,15 @@ ErrorStatus RTC_SetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct)
         /* Check the parameters */
         assert_param(IS_RTC_FORMAT(RTC_Format));
 
-        if ((RTC_Format == RTC_Format_BIN) && ((RTC_DateStruct->RTC_Month & 0x10) == 0x10))
-        {
+        if ((RTC_Format == RTC_Format_BIN) && ((RTC_DateStruct->RTC_Month & 0x10) == 0x10)) {
                 RTC_DateStruct->RTC_Month = (RTC_DateStruct->RTC_Month & (uint32_t)~(0x10)) + 0x0A;
         }  
-        if (RTC_Format == RTC_Format_BIN)
-        {
+        if (RTC_Format == RTC_Format_BIN) {
                 assert_param(IS_RTC_YEAR(RTC_DateStruct->RTC_Year));
                 assert_param(IS_RTC_MONTH(RTC_DateStruct->RTC_Month));
                 assert_param(IS_RTC_DATE(RTC_DateStruct->RTC_Date));
         }
-        else
-        {
+        else {
                 assert_param(IS_RTC_YEAR(RTC_Bcd2ToByte(RTC_DateStruct->RTC_Year)));
                 tmpreg = RTC_Bcd2ToByte(RTC_DateStruct->RTC_Month);
                 assert_param(IS_RTC_MONTH(tmpreg));
@@ -933,15 +889,13 @@ ErrorStatus RTC_SetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct)
         assert_param(IS_RTC_WEEKDAY(RTC_DateStruct->RTC_WeekDay));
 
         /* Check the input parameters format */
-        if (RTC_Format != RTC_Format_BIN)
-        {
+        if (RTC_Format != RTC_Format_BIN) {
                 tmpreg = ((((uint32_t)RTC_DateStruct->RTC_Year) << 16) | \
                                 (((uint32_t)RTC_DateStruct->RTC_Month) << 8) | \
                                 ((uint32_t)RTC_DateStruct->RTC_Date) | \
                                 (((uint32_t)RTC_DateStruct->RTC_WeekDay) << 13)); 
         }  
-        else
-        {
+        else {
                 tmpreg = (((uint32_t)RTC_ByteToBcd2(RTC_DateStruct->RTC_Year) << 16) | \
                                 ((uint32_t)RTC_ByteToBcd2(RTC_DateStruct->RTC_Month) << 8) | \
                                 ((uint32_t)RTC_ByteToBcd2(RTC_DateStruct->RTC_Date)) | \
@@ -953,12 +907,10 @@ ErrorStatus RTC_SetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct)
         RTC->WPR = 0x53;
 
         /* Set Initialization mode */
-        if (RTC_EnterInitMode() == ERROR)
-        {
+        if (RTC_EnterInitMode() == ERROR) {
                 status = ERROR;
         } 
-        else
-        {
+        else {
                 /* Set the RTC_DR register */
                 RTC->DR = (uint32_t)(tmpreg & RTC_DR_RESERVED_MASK);
 
@@ -966,19 +918,15 @@ ErrorStatus RTC_SetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct)
                 RTC_ExitInitMode(); 
 
                 /* If  RTC_CR_BYPSHAD bit = 0, wait for synchro else this check is not needed */
-                if ((RTC->CR & RTC_CR_BYPSHAD) == RESET)
-                {
-                        if (RTC_WaitForSynchro() == ERROR)
-                        {
+                if ((RTC->CR & RTC_CR_BYPSHAD) == RESET) {
+                        if (RTC_WaitForSynchro() == ERROR) {
                                 status = ERROR;
                         }
-                        else
-                        {
+                        else {
                                 status = SUCCESS;
                         }
                 }
-                else
-                {
+                else {
                         status = SUCCESS;
                 }
         }
@@ -1031,8 +979,7 @@ void RTC_GetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct)
         RTC_DateStruct->RTC_WeekDay = (uint8_t)((tmpreg & (RTC_DR_WDU)) >> 13);  
 
         /* Check the input parameters format */
-        if (RTC_Format == RTC_Format_BIN)
-        {
+        if (RTC_Format == RTC_Format_BIN) {
                 /* Convert the structure parameters to Binary format */
                 RTC_DateStruct->RTC_Year = (uint8_t)RTC_Bcd2ToByte(RTC_DateStruct->RTC_Year);
                 RTC_DateStruct->RTC_Month = (uint8_t)RTC_Bcd2ToByte(RTC_DateStruct->RTC_Month);
@@ -1084,40 +1031,32 @@ void RTC_SetAlarm(uint32_t RTC_Format, uint32_t RTC_Alarm, RTC_AlarmTypeDef* RTC
         assert_param(IS_ALARM_MASK(RTC_AlarmStruct->RTC_AlarmMask));
         assert_param(IS_RTC_ALARM_DATE_WEEKDAY_SEL(RTC_AlarmStruct->RTC_AlarmDateWeekDaySel));
 
-        if (RTC_Format == RTC_Format_BIN)
-        {
-                if ((RTC->CR & RTC_CR_FMT) != (uint32_t)RESET)
-                {
+        if (RTC_Format == RTC_Format_BIN) {
+                if ((RTC->CR & RTC_CR_FMT) != (uint32_t)RESET) {
                         assert_param(IS_RTC_HOUR12(RTC_AlarmStruct->RTC_AlarmTime.RTC_Hours));
                         assert_param(IS_RTC_H12(RTC_AlarmStruct->RTC_AlarmTime.RTC_H12));
                 } 
-                else
-                {
+                else {
                         RTC_AlarmStruct->RTC_AlarmTime.RTC_H12 = 0x00;
                         assert_param(IS_RTC_HOUR24(RTC_AlarmStruct->RTC_AlarmTime.RTC_Hours));
                 }
                 assert_param(IS_RTC_MINUTES(RTC_AlarmStruct->RTC_AlarmTime.RTC_Minutes));
                 assert_param(IS_RTC_SECONDS(RTC_AlarmStruct->RTC_AlarmTime.RTC_Seconds));
 
-                if(RTC_AlarmStruct->RTC_AlarmDateWeekDaySel == RTC_AlarmDateWeekDaySel_Date)
-                {
+                if(RTC_AlarmStruct->RTC_AlarmDateWeekDaySel == RTC_AlarmDateWeekDaySel_Date) {
                         assert_param(IS_RTC_ALARM_DATE_WEEKDAY_DATE(RTC_AlarmStruct->RTC_AlarmDateWeekDay));
                 }
-                else
-                {
+                else {
                         assert_param(IS_RTC_ALARM_DATE_WEEKDAY_WEEKDAY(RTC_AlarmStruct->RTC_AlarmDateWeekDay));
                 }
         }
-        else
-        {
-                if ((RTC->CR & RTC_CR_FMT) != (uint32_t)RESET)
-                {
+        else {
+                if ((RTC->CR & RTC_CR_FMT) != (uint32_t)RESET) {
                         tmpreg = RTC_Bcd2ToByte(RTC_AlarmStruct->RTC_AlarmTime.RTC_Hours);
                         assert_param(IS_RTC_HOUR12(tmpreg));
                         assert_param(IS_RTC_H12(RTC_AlarmStruct->RTC_AlarmTime.RTC_H12));
                 } 
-                else
-                {
+                else {
                         RTC_AlarmStruct->RTC_AlarmTime.RTC_H12 = 0x00;
                         assert_param(IS_RTC_HOUR24(RTC_Bcd2ToByte(RTC_AlarmStruct->RTC_AlarmTime.RTC_Hours)));
                 }
@@ -1125,21 +1064,18 @@ void RTC_SetAlarm(uint32_t RTC_Format, uint32_t RTC_Alarm, RTC_AlarmTypeDef* RTC
                 assert_param(IS_RTC_MINUTES(RTC_Bcd2ToByte(RTC_AlarmStruct->RTC_AlarmTime.RTC_Minutes)));
                 assert_param(IS_RTC_SECONDS(RTC_Bcd2ToByte(RTC_AlarmStruct->RTC_AlarmTime.RTC_Seconds)));
 
-                if(RTC_AlarmStruct->RTC_AlarmDateWeekDaySel == RTC_AlarmDateWeekDaySel_Date)
-                {
+                if(RTC_AlarmStruct->RTC_AlarmDateWeekDaySel == RTC_AlarmDateWeekDaySel_Date) {
                         tmpreg = RTC_Bcd2ToByte(RTC_AlarmStruct->RTC_AlarmDateWeekDay);
                         assert_param(IS_RTC_ALARM_DATE_WEEKDAY_DATE(tmpreg));    
                 }
-                else
-                {
+                else {
                         tmpreg = RTC_Bcd2ToByte(RTC_AlarmStruct->RTC_AlarmDateWeekDay);
                         assert_param(IS_RTC_ALARM_DATE_WEEKDAY_WEEKDAY(tmpreg));      
                 }    
         }
 
         /* Check the input parameters format */
-        if (RTC_Format != RTC_Format_BIN)
-        {
+        if (RTC_Format != RTC_Format_BIN) {
                 tmpreg = (((uint32_t)(RTC_AlarmStruct->RTC_AlarmTime.RTC_Hours) << 16) | \
                                 ((uint32_t)(RTC_AlarmStruct->RTC_AlarmTime.RTC_Minutes) << 8) | \
                                 ((uint32_t)RTC_AlarmStruct->RTC_AlarmTime.RTC_Seconds) | \
@@ -1148,8 +1084,7 @@ void RTC_SetAlarm(uint32_t RTC_Format, uint32_t RTC_Alarm, RTC_AlarmTypeDef* RTC
                                 ((uint32_t)RTC_AlarmStruct->RTC_AlarmDateWeekDaySel) | \
                                 ((uint32_t)RTC_AlarmStruct->RTC_AlarmMask)); 
         }  
-        else
-        {
+        else {
                 tmpreg = (((uint32_t)RTC_ByteToBcd2(RTC_AlarmStruct->RTC_AlarmTime.RTC_Hours) << 16) | \
                                 ((uint32_t)RTC_ByteToBcd2(RTC_AlarmStruct->RTC_AlarmTime.RTC_Minutes) << 8) | \
                                 ((uint32_t)RTC_ByteToBcd2(RTC_AlarmStruct->RTC_AlarmTime.RTC_Seconds)) | \
@@ -1164,12 +1099,10 @@ void RTC_SetAlarm(uint32_t RTC_Format, uint32_t RTC_Alarm, RTC_AlarmTypeDef* RTC
         RTC->WPR = 0x53;
 
         /* Configure the Alarm register */
-        if (RTC_Alarm == RTC_Alarm_A)
-        {
+        if (RTC_Alarm == RTC_Alarm_A) {
                 RTC->ALRMAR = (uint32_t)tmpreg;
         }
-        else
-        {
+        else {
                 RTC->ALRMBR = (uint32_t)tmpreg;
         }
 
@@ -1224,12 +1157,10 @@ void RTC_GetAlarm(uint32_t RTC_Format, uint32_t RTC_Alarm, RTC_AlarmTypeDef* RTC
         assert_param(IS_RTC_ALARM(RTC_Alarm)); 
 
         /* Get the RTC_ALRMxR register */
-        if (RTC_Alarm == RTC_Alarm_A)
-        {
+        if (RTC_Alarm == RTC_Alarm_A) {
                 tmpreg = (uint32_t)(RTC->ALRMAR);
         }
-        else
-        {
+        else {
                 tmpreg = (uint32_t)(RTC->ALRMBR);
         }
 
@@ -1245,8 +1176,7 @@ void RTC_GetAlarm(uint32_t RTC_Format, uint32_t RTC_Alarm, RTC_AlarmTypeDef* RTC
         RTC_AlarmStruct->RTC_AlarmDateWeekDaySel = (uint32_t)(tmpreg & RTC_ALRMAR_WDSEL);
         RTC_AlarmStruct->RTC_AlarmMask = (uint32_t)(tmpreg & RTC_AlarmMask_All);
 
-        if (RTC_Format == RTC_Format_BIN)
-        {
+        if (RTC_Format == RTC_Format_BIN) {
                 RTC_AlarmStruct->RTC_AlarmTime.RTC_Hours = RTC_Bcd2ToByte(RTC_AlarmStruct-> \
                                 RTC_AlarmTime.RTC_Hours);
                 RTC_AlarmStruct->RTC_AlarmTime.RTC_Minutes = RTC_Bcd2ToByte(RTC_AlarmStruct-> \
@@ -1284,14 +1214,12 @@ ErrorStatus RTC_AlarmCmd(uint32_t RTC_Alarm, FunctionalState NewState)
         RTC->WPR = 0x53;
 
         /* Configure the Alarm state */
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 RTC->CR |= (uint32_t)RTC_Alarm;
 
                 status = SUCCESS;    
         }
-        else
-        { 
+        else { 
                 /* Disable the Alarm in RTC_CR register */
                 RTC->CR &= (uint32_t)~RTC_Alarm;
 
@@ -1302,12 +1230,10 @@ ErrorStatus RTC_AlarmCmd(uint32_t RTC_Alarm, FunctionalState NewState)
                         alarmcounter++;  
                 } while((alarmcounter != INITMODE_TIMEOUT) && (alarmstatus == 0x00));
 
-                if ((RTC->ISR & (RTC_Alarm >> 8)) == RESET)
-                {
+                if ((RTC->ISR & (RTC_Alarm >> 8)) == RESET) {
                         status = ERROR;
                 } 
-                else
-                {
+                else {
                         status = SUCCESS;
                 }        
         } 
@@ -1379,13 +1305,11 @@ void RTC_AlarmSubSecondConfig(uint32_t RTC_Alarm, uint32_t RTC_AlarmSubSecondVal
         /* Configure the Alarm A or Alarm B SubSecond registers */
         tmpreg = (uint32_t) (uint32_t)(RTC_AlarmSubSecondValue) | (uint32_t)(RTC_AlarmSubSecondMask);
 
-        if (RTC_Alarm == RTC_Alarm_A)
-        {
+        if (RTC_Alarm == RTC_Alarm_A) {
                 /* Configure the AlarmA SubSecond register */
                 RTC->ALRMASSR = tmpreg;
         }
-        else
-        {
+        else {
                 /* Configure the Alarm B SubSecond register */
                 RTC->ALRMBSSR = tmpreg;
         }
@@ -1409,12 +1333,10 @@ uint32_t RTC_GetAlarmSubSecond(uint32_t RTC_Alarm)
         uint32_t tmpreg = 0;
 
         /* Get the RTC_ALRMxR register */
-        if (RTC_Alarm == RTC_Alarm_A)
-        {
+        if (RTC_Alarm == RTC_Alarm_A) {
                 tmpreg = (uint32_t)((RTC->ALRMASSR) & RTC_ALRMASSR_SS);
         }
-        else
-        {
+        else {
                 tmpreg = (uint32_t)((RTC->ALRMBSSR) & RTC_ALRMBSSR_SS);
         } 
 
@@ -1525,14 +1447,12 @@ ErrorStatus RTC_WakeUpCmd(FunctionalState NewState)
         RTC->WPR = 0xCA;
         RTC->WPR = 0x53;
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the Wakeup Timer */
                 RTC->CR |= (uint32_t)RTC_CR_WUTE;
                 status = SUCCESS;    
         }
-        else
-        {
+        else {
                 /* Disable the Wakeup Timer */
                 RTC->CR &= (uint32_t)~RTC_CR_WUTE;
                 /* Wait till RTC WUTWF flag is set and if Time out is reached exit */
@@ -1542,12 +1462,10 @@ ErrorStatus RTC_WakeUpCmd(FunctionalState NewState)
                         wutcounter++;  
                 } while((wutcounter != INITMODE_TIMEOUT) && (wutwfstatus == 0x00));
 
-                if ((RTC->ISR & RTC_ISR_WUTWF) == RESET)
-                {
+                if ((RTC->ISR & RTC_ISR_WUTWF) == RESET) {
                         status = ERROR;
                 }
-                else
-                {
+                else {
                         status = SUCCESS;
                 }    
         }
@@ -1705,13 +1623,11 @@ void RTC_CalibOutputCmd(FunctionalState NewState)
         RTC->WPR = 0xCA;
         RTC->WPR = 0x53;
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the RTC clock output */
                 RTC->CR |= (uint32_t)RTC_CR_COE;
         }
-        else
-        { 
+        else { 
                 /* Disable the RTC clock output */
                 RTC->CR &= (uint32_t)~RTC_CR_COE;
         }
@@ -1781,8 +1697,7 @@ ErrorStatus RTC_SmoothCalibConfig(uint32_t RTC_SmoothCalibPeriod,
         RTC->WPR = 0x53;
 
         /* check if a calibration is pending*/
-        if ((RTC->ISR & RTC_ISR_RECALPF) != RESET)
-        {
+        if ((RTC->ISR & RTC_ISR_RECALPF) != RESET) {
                 /* wait until the Calibration is completed*/
                 while (((RTC->ISR & RTC_ISR_RECALPF) != RESET) && (recalpfcount != RECALPF_TIMEOUT))
                 {
@@ -1791,15 +1706,13 @@ ErrorStatus RTC_SmoothCalibConfig(uint32_t RTC_SmoothCalibPeriod,
         }
 
         /* check if the calibration pending is completed or if there is no calibration operation at all*/
-        if ((RTC->ISR & RTC_ISR_RECALPF) == RESET)
-        {
+        if ((RTC->ISR & RTC_ISR_RECALPF) == RESET) {
                 /* Configure the Smooth calibration settings */
                 RTC->CALR = (uint32_t)((uint32_t)RTC_SmoothCalibPeriod | (uint32_t)RTC_SmoothCalibPlusPulses | (uint32_t)RTC_SmouthCalibMinusPulsesValue);
 
                 status = SUCCESS;
         }
-        else
-        {
+        else {
                 status = ERROR;
         }
 
@@ -1852,12 +1765,10 @@ void RTC_TimeStampCmd(uint32_t RTC_TimeStampEdge, FunctionalState NewState)
         tmpreg = (uint32_t)(RTC->CR & (uint32_t)~(RTC_CR_TSEDGE | RTC_CR_TSE));
 
         /* Get the new configuration */
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 tmpreg |= (uint32_t)(RTC_TimeStampEdge | RTC_CR_TSE);
         }
-        else
-        {
+        else {
                 tmpreg |= (uint32_t)(RTC_TimeStampEdge);
         }
 
@@ -1909,8 +1820,7 @@ void RTC_GetTimeStamp(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_StampTimeStruct,
         RTC_StampDateStruct->RTC_WeekDay = (uint8_t)((tmpdate & (RTC_DR_WDU)) >> 13);
 
         /* Check the input parameters format */
-        if (RTC_Format == RTC_Format_BIN)
-        {
+        if (RTC_Format == RTC_Format_BIN) {
                 /* Convert the Time structure parameters to Binary format */
                 RTC_StampTimeStruct->RTC_Hours = (uint8_t)RTC_Bcd2ToByte(RTC_StampTimeStruct->RTC_Hours);
                 RTC_StampTimeStruct->RTC_Minutes = (uint8_t)RTC_Bcd2ToByte(RTC_StampTimeStruct->RTC_Minutes);
@@ -1973,13 +1883,11 @@ void RTC_TamperTriggerConfig(uint32_t RTC_Tamper, uint32_t RTC_TamperTrigger)
         assert_param(IS_RTC_TAMPER_TRIGGER(RTC_TamperTrigger));
 
         /* Check if the  active level for Tamper is rising edge (Low level)*/
-        if (RTC_TamperTrigger == RTC_TamperTrigger_RisingEdge)
-        {  
+        if (RTC_TamperTrigger == RTC_TamperTrigger_RisingEdge) {  
                 /* Configure the RTC_TAFCR register */
                 RTC->TAFCR &= (uint32_t)((uint32_t)~(RTC_Tamper << 1));	
         }
-        else
-        { 
+        else { 
                 /* Configure the RTC_TAFCR register */
                 RTC->TAFCR |= (uint32_t)(RTC_Tamper << 1);  
         }  
@@ -2002,13 +1910,11 @@ void RTC_TamperCmd(uint32_t RTC_Tamper, FunctionalState NewState)
         assert_param(IS_RTC_TAMPER(RTC_Tamper));  
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the selected Tamper pin */
                 RTC->TAFCR |= (uint32_t)RTC_Tamper;
         }
-        else
-        {
+        else {
                 /* Disable the selected Tamper pin */
                 RTC->TAFCR &= (uint32_t)~RTC_Tamper;    
         }  
@@ -2109,13 +2015,11 @@ void RTC_TimeStampOnTamperDetectionCmd(FunctionalState NewState)
         /* Check the parameters */
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Save timestamp on tamper detection event */
                 RTC->TAFCR |= (uint32_t)RTC_TAFCR_TAMPTS;
         }
-        else
-        {
+        else {
                 /* Tamper detection does not cause a timestamp to be saved */
                 RTC->TAFCR &= (uint32_t)~RTC_TAFCR_TAMPTS;    
         }
@@ -2132,13 +2036,11 @@ void RTC_TamperPullUpCmd(FunctionalState NewState)
         /* Check the parameters */
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable precharge of the selected Tamper pin */
                 RTC->TAFCR &= (uint32_t)~RTC_TAFCR_TAMPPUDIS; 
         }
-        else
-        {
+        else {
                 /* Disable precharge of the selected Tamper pin */
                 RTC->TAFCR |= (uint32_t)RTC_TAFCR_TAMPPUDIS;    
         } 
@@ -2281,8 +2183,7 @@ ErrorStatus RTC_SynchroShiftConfig(uint32_t RTC_ShiftAdd1S, uint32_t RTC_ShiftSu
         RTC->WPR = 0x53;
 
         /* Check if a Shift is pending*/
-        if ((RTC->ISR & RTC_ISR_SHPF) != RESET)
-        {
+        if ((RTC->ISR & RTC_ISR_SHPF) != RESET) {
                 /* Wait until the shift is completed*/
                 while (((RTC->ISR & RTC_ISR_SHPF) != RESET) && (shpfcount != SHPF_TIMEOUT))
                 {
@@ -2291,11 +2192,9 @@ ErrorStatus RTC_SynchroShiftConfig(uint32_t RTC_ShiftAdd1S, uint32_t RTC_ShiftSu
         }
 
         /* Check if the Shift pending is completed or if there is no Shift operation at all*/
-        if ((RTC->ISR & RTC_ISR_SHPF) == RESET)
-        {
+        if ((RTC->ISR & RTC_ISR_SHPF) == RESET) {
                 /* check if the reference clock detection is disabled */
-                if((RTC->CR & RTC_CR_REFCKON) == RESET)
-                {
+                if((RTC->CR & RTC_CR_REFCKON) == RESET) {
                         /* Configure the Shift settings */
                         RTC->SHIFTR = (uint32_t)(uint32_t)(RTC_ShiftSubFS) | (uint32_t)(RTC_ShiftAdd1S);
 
@@ -2303,18 +2202,15 @@ ErrorStatus RTC_SynchroShiftConfig(uint32_t RTC_ShiftAdd1S, uint32_t RTC_ShiftSu
                         {
                                 status = ERROR;
                         }
-                        else
-                        {
+                        else {
                                 status = SUCCESS;
                         }
                 }
-                else
-                {
+                else {
                         status = ERROR;
                 }
         }
-        else
-        {
+        else {
                 status = ERROR;
         }
 
@@ -2393,15 +2289,13 @@ void RTC_ITConfig(uint32_t RTC_IT, FunctionalState NewState)
         RTC->WPR = 0xCA;
         RTC->WPR = 0x53;
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Configure the Interrupts in the RTC_CR register */
                 RTC->CR |= (uint32_t)(RTC_IT & ~RTC_TAFCR_TAMPIE);
                 /* Configure the Tamper Interrupt in the RTC_TAFCR */
                 RTC->TAFCR |= (uint32_t)(RTC_IT & RTC_TAFCR_TAMPIE);
         }
-        else
-        {
+        else {
                 /* Configure the Interrupts in the RTC_CR register */
                 RTC->CR &= (uint32_t)~(RTC_IT & (uint32_t)~RTC_TAFCR_TAMPIE);
                 /* Configure the Tamper Interrupt in the RTC_TAFCR */
@@ -2445,12 +2339,10 @@ FlagStatus RTC_GetFlagStatus(uint32_t RTC_FLAG)
         tmpreg = (uint32_t)(RTC->ISR & RTC_FLAGS_MASK);
 
         /* Return the status of the flag */
-        if ((tmpreg & RTC_FLAG) != (uint32_t)RESET)
-        {
+        if ((tmpreg & RTC_FLAG) != (uint32_t)RESET) {
                 bitstatus = SET;
         }
-        else
-        {
+        else {
                 bitstatus = RESET;
         }
         return bitstatus;
@@ -2511,12 +2403,10 @@ ITStatus RTC_GetITStatus(uint32_t RTC_IT)
         tmpreg = (uint32_t)((RTC->ISR & (uint32_t)(RTC_IT >> 4)));
 
         /* Get the status of the Interrupt */
-        if ((enablestatus != (uint32_t)RESET) && ((tmpreg & 0x0000FFFF) != (uint32_t)RESET))
-        {
+        if ((enablestatus != (uint32_t)RESET) && ((tmpreg & 0x0000FFFF) != (uint32_t)RESET)) {
                 bitstatus = SET;
         }
-        else
-        {
+        else {
                 bitstatus = RESET;
         }
         return bitstatus;

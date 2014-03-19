@@ -178,13 +178,11 @@ void SYSCFG_DMAChannelRemapConfig(uint32_t SYSCFG_DMARemap, FunctionalState NewS
         assert_param(IS_SYSCFG_DMA_REMAP(SYSCFG_DMARemap));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Remap the DMA channel */
                 SYSCFG->CFGR1 |= (uint32_t)SYSCFG_DMARemap;
         }
-        else
-        {
+        else {
                 /* use the default DMA channel mapping */
                 SYSCFG->CFGR1 &= (uint32_t)(~SYSCFG_DMARemap);
         }
@@ -208,13 +206,11 @@ void SYSCFG_TriggerRemapConfig(uint32_t SYSCFG_TriggerRemap, FunctionalState New
         assert_param(IS_SYSCFG_TRIGGER_REMAP(SYSCFG_TriggerRemap));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Remap the trigger */
                 SYSCFG->CFGR1 |= (uint32_t)SYSCFG_TriggerRemap;
         }
-        else
-        {
+        else {
                 /* Use the default trigger mapping */
                 SYSCFG->CFGR1 &= (uint32_t)(~SYSCFG_TriggerRemap);
         }
@@ -296,13 +292,11 @@ void SYSCFG_I2CFastModePlusConfig(uint32_t SYSCFG_I2CFastModePlus, FunctionalSta
         assert_param(IS_SYSCFG_I2C_FMP(SYSCFG_I2CFastModePlus));
         assert_param(IS_FUNCTIONAL_STATE(NewState));
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable fast mode plus driving capability for selected I2C pin */
                 SYSCFG->CFGR1 |= (uint32_t)SYSCFG_I2CFastModePlus;
         }
-        else
-        {
+        else {
                 /* Disable fast mode plus driving capability for selected I2C pin */
                 SYSCFG->CFGR1 &= (uint32_t)(~SYSCFG_I2CFastModePlus);
         }
@@ -328,13 +322,11 @@ void SYSCFG_ITConfig(uint32_t SYSCFG_IT, FunctionalState NewState)
         assert_param(IS_FUNCTIONAL_STATE(NewState));
         assert_param(IS_SYSCFG_IT(SYSCFG_IT)); 
 
-        if (NewState != DISABLE)
-        {
+        if (NewState != DISABLE) {
                 /* Enable the selected SYSCFG interrupts */
                 SYSCFG->CFGR1 |= SYSCFG_IT;
         }
-        else
-        {
+        else {
                 /* Disable the selected SYSCFG interrupts */
                 SYSCFG->CFGR1 &= ((uint32_t)~SYSCFG_IT);
         }
@@ -424,8 +416,7 @@ FlagStatus SYSCFG_GetFlagStatus(uint32_t SYSCFG_Flag)
         assert_param(IS_SYSCFG_FLAG(SYSCFG_Flag));
 
         /* Check the status of the specified SPI flag */
-        if ((SYSCFG->CFGR2 & SYSCFG_CFGR2_SRAM_PE) != (uint32_t)RESET)
-        {
+        if ((SYSCFG->CFGR2 & SYSCFG_CFGR2_SRAM_PE) != (uint32_t)RESET) {
                 /* SYSCFG_Flag is set */
                 bitstatus = SET;
         }
