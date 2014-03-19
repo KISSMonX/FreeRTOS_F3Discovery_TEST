@@ -53,6 +53,78 @@ int main(void)
         for( ;; );		
 }
 
+
+//=========================================================================================================
+// 时钟配置, 包括系统时钟, 外设时钟
+// 使用内部的 8MHz 时钟作为 PLL 时钟源, 配置成 72MHz
+//=========================================================================================================
+static void RCC_Config(void)
+{
+	/* Start with the clocks in their expected state. */
+	RCC_DeInit();
+
+	// Disable HSE (high speed external clock).
+	RCC_HSEConfig( RCC_HSE_OFF );
+	
+	// Enables the Internal High Speed oscillator (HSI).
+	RCC_HSICmd(ENABLE);
+
+	/* Wait till HSI is ready. */
+	while( RCC_GetFlagStatus( RCC_FLAG_HSIRDY ) == RESET )
+	{
+	}
+
+//	/* 2 wait states required on the flash. */
+//	*( ( unsigned long * ) 0x40022000 ) = 0x02;
+
+	/* HCLK = SYSCLK */
+	RCC_HCLKConfig( RCC_SYSCLK_Div1 );
+
+	/* PCLK2 = HCLK */
+	RCC_PCLK2Config( RCC_HCLK_Div1 );
+
+	/* PCLK1 = HCLK/2 */
+	RCC_PCLK1Config( RCC_HCLK_Div2 );
+	
+	/* 2 wait states required on the flash. */
+	FLASH_SetLatency(FLASH_Latency_2);
+	
+	/* PLLCLK = 4MHz * 10 = 40 MHz. */
+	RCC_PLLConfig( RCC_PLLSource_HSI_Div2, RCC_PLLMul_10 );
+
+	/* Enable PLL. */
+	RCC_PLLCmd( ENABLE );
+
+	/* Wait till PLL is ready. */
+	while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET)
+	{
+	}
+
+	/* Select PLL as system clock source. */
+	RCC_SYSCLKConfig( RCC_SYSCLKSource_PLLCLK );
+
+	/* Wait till PLL is used as system clock source. */
+	while( RCC_GetSYSCLKSource() != 0x08 )
+	{
+	}
+
+	/* Enable GPIOA, GPIOB, GPIOC, GPIOD, GPIOE and AFIO clocks */
+	// STM32F3 和 STM32F0 中的 GPIO 连接总线 AHB2, 而不是 F1 系列的 APB2 
+	// 具体参考 Block diagram 和 Migrating from STM32F1 to STM32F3 microcontrollers
+	RCC_AHBPeriphClockCmd(	RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOE, ENABLE );
+	
+	RCC_MCOConfig(RCC_MCOSource_PLLCLK_Div2); 	// 引脚输出系统时钟/2
+	
+//	/* Set the Vector Table base address at 0x08000000 */
+//	NVIC_SetVectorTable( NVIC_VectTab_FLASH, 0x0 );
+
+//	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
+
+	/* Configure HCLK clock as SysTick clock source. */
+	SysTick_CLKSourceConfig( SysTick_CLKSource_HCLK );
+
+}
+
 //=========================================================================================================
 // 硬件初始化
 //=========================================================================================================
@@ -60,18 +132,26 @@ static void prvSetupHardware( void )
 {
 	// 内部外设结构体变量
 	GPIO_InitTypeDef  	GPIO_InitStructure;	
-	NVIC_InitTypeDef	NVIC_InitStructure;
+//	NVIC_InitTypeDef	NVIC_InitStructure;
 	
 	
-	//外设时钟配置---ENABLE
-	RCC_AHBPeriphClockCmd(	RCC_AHBPeriph_GPIOA |		// GPIOA模块时钟
-				RCC_AHBPeriph_GPIOE, ENABLE);	// GPIOE模块时钟											
-
+	//时钟配置											
+	RCC_Config();
+	
+	
+	// 设置 MCO 引脚输出到 PA8
+	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_8;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF ;  // OUT 模式再试试, 据说只能复用模式才能输出
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;	// 推挽输出
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	
 	/*
 	 * LED GPIO初始化
 	 * GPIOE 控制一圈 LED
 	 */	 
-	GPIO_InitStructure.GPIO_Pin   = (GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_12 | GPIO_Pin_15);	 
+	GPIO_InitStructure.GPIO_Pin   = (GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 \
+					| GPIO_Pin_12 | GPIO_Pin_13| GPIO_Pin_14 | GPIO_Pin_15);	 
 	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;		// 输出模式
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;		// 推挽输出
 	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;	// 禁止上下拉
@@ -88,10 +168,10 @@ static void prvSetupHardware( void )
 	GPIO_Init(GPIOA, &GPIO_InitStructure);	
 	
 	// 系统中断初始化 -> 系统所用中断
-	NVIC_InitStructure.NVIC_IRQChannel = SVCall_IRQn;	
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);	
+//	NVIC_InitStructure.NVIC_IRQChannel = SVCall_IRQn;	
+//	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+//	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+//	NVIC_Init(&NVIC_InitStructure);	
 }
 
 

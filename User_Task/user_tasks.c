@@ -2,8 +2,6 @@
  *创建5个任务：
  *1. LED3闪烁任务prvLED3BlinkTask
  *2. 按键检测任务prvButtonCheckTask
- *3. USART1通讯任务prvUsart1Task
- *4. LCD5110显示任务prvLCDTask
  *5. 增加 IO 口反转速度检测
  *-----------------------------------------------------------*/
 
@@ -49,7 +47,7 @@ void prvPort_ToggleTask(void *pvParameters)
 {
 	for (;;) {
 		GPIOE->ODR ^= GPIO_Pin_8;
-		vTaskDelay(1);
+		vTaskDelay(80);
 	}
 }	
 	
@@ -65,7 +63,7 @@ void prvButtonCheckTask(void *pvParameters)
 {	
         static uint8_t bounce_count;
         portTickType xNextWakeTime;
-        const portTickType xFrequency = 5;
+        const portTickType xFrequency = 10;
         xNextWakeTime = xTaskGetTickCount();
 
         /* 创建信号 */
@@ -80,9 +78,10 @@ void prvButtonCheckTask(void *pvParameters)
                 /* 读取按键状态 */
                 if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == pdTRUE)//如果检测到按键按下
                 {
-                        bounce_count++;
-                        if (bounce_count == 3)//按键防抖
+                        if (bounce_count++ == 5)//按键防抖
                         {	
+				// 如果不清零的话, 就得加到溢出然后再重新加到才行, 结果就是会很迟钝
+				bounce_count = 0;	
 				GPIOE->ODR ^= (GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_14);
                                 xSemaphoreGive(xButtonSpeedUpSemaphore);//释放按键信号 
                         }

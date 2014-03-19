@@ -87,12 +87,12 @@ extern "C" {
 #define portDOUBLE		double
 #define portLONG		long
 #define portSHORT		short
-#define portSTACK_TYPE	uint32_t
-#define portBASE_TYPE	long
+#define portSTACK_TYPE		uint32_t
+#define portBASE_TYPE		long
 
-typedef portSTACK_TYPE StackType_t;
-typedef long BaseType_t;
-typedef unsigned long UBaseType_t;
+typedef portSTACK_TYPE 		StackType_t;
+typedef long 			BaseType_t;
+typedef unsigned long 		UBaseType_t;
 
 #if( configUSE_16_BIT_TICKS == 1 )
 	typedef uint16_t TickType_t;
@@ -177,6 +177,10 @@ not necessary for to use this port.  They are defined so the common demo files
 #ifdef __cplusplus
 }
 #endif
+
+#define vPortSVCHandler      SVC_Handler
+#define xPortSysTickHandler  SysTick_Handler
+#define xPortPendSVHandler   PendSV_Handler
 
 #endif /* PORTMACRO_H */
 
