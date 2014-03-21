@@ -230,13 +230,13 @@ Default_Handler PROC
 
                 EXPORT  WWDG_IRQHandler                   [WEAK]                                        
                 EXPORT  PVD_IRQHandler                    [WEAK]                      
-                EXPORT  TAMPER_STAMP_IRQHandler             [WEAK]         
+                EXPORT  TAMPER_STAMP_IRQHandler           [WEAK]         
                 EXPORT  RTC_WKUP_IRQHandler               [WEAK]                     
                 EXPORT  FLASH_IRQHandler                  [WEAK]                                         
                 EXPORT  RCC_IRQHandler                    [WEAK]                                            
                 EXPORT  EXTI0_IRQHandler                  [WEAK]                                            
                 EXPORT  EXTI1_IRQHandler                  [WEAK]                                             
-                EXPORT  EXTI2_TS_IRQHandler                  [WEAK]                                            
+                EXPORT  EXTI2_TS_IRQHandler               [WEAK]                                            
                 EXPORT  EXTI3_IRQHandler                  [WEAK]                                           
                 EXPORT  EXTI4_IRQHandler                  [WEAK]                                            
                 EXPORT  DMA1_Channel1_IRQHandler          [WEAK]                                
@@ -270,7 +270,7 @@ Default_Handler PROC
                 EXPORT  USART3_IRQHandler                 [WEAK]                                         
                 EXPORT  EXTI15_10_IRQHandler              [WEAK]                                  
                 EXPORT  RTC_Alarm_IRQHandler              [WEAK]                  
-                EXPORT  USBWakeUp_IRQHandler               [WEAK]                        
+                EXPORT  USBWakeUp_IRQHandler              [WEAK]                        
                 EXPORT  TIM8_BRK_IRQHandler               [WEAK]                 
                 EXPORT  TIM8_UP_IRQHandler                [WEAK]                 
                 EXPORT  TIM8_TRG_COM_IRQHandler           [WEAK] 
@@ -292,7 +292,7 @@ Default_Handler PROC
                 EXPORT  COMP7_IRQHandler                  [WEAK]                                               
                 EXPORT  USB_HP_IRQHandler                 [WEAK]                      
                 EXPORT  USB_LP_IRQHandler                 [WEAK]                      
-                EXPORT  USBWakeUp_RMP_IRQHandler              [WEAK]                        
+                EXPORT  USBWakeUp_RMP_IRQHandler          [WEAK]                        
                 EXPORT  FPU_IRQHandler                    [WEAK]                
 
 WWDG_IRQHandler                                                       

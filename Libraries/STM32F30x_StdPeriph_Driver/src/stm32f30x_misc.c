@@ -204,8 +204,7 @@ void SysTick_CLKSourceConfig(uint32_t SysTick_CLKSource)
         if (SysTick_CLKSource == SysTick_CLKSource_HCLK) {
                 SysTick->CTRL |= SysTick_CLKSource_HCLK;
         }
-        else
-        {
+        else {
                 SysTick->CTRL &= SysTick_CLKSource_HCLK_Div8;
         }
 }

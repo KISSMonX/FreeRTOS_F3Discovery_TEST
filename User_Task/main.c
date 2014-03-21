@@ -87,8 +87,8 @@ static void RCC_Config(void)
 	/* 2 wait states required on the flash. */
 	FLASH_SetLatency(FLASH_Latency_2);
 	
-	/* PLLCLK = 4MHz * 10 = 40 MHz. */
-	RCC_PLLConfig( RCC_PLLSource_HSI_Div2, RCC_PLLMul_10 );
+	/* PLLCLK = 4MHz * 15 = 60 MHz. */
+	RCC_PLLConfig( RCC_PLLSource_HSI_Div2, RCC_PLLMul_15 );
 
 	/* Enable PLL. */
 	RCC_PLLCmd( ENABLE );
@@ -112,11 +112,6 @@ static void RCC_Config(void)
 	RCC_AHBPeriphClockCmd(	RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOE, ENABLE );
 	
 	RCC_MCOConfig(RCC_MCOSource_PLLCLK_Div2); 	// 引脚输出系统时钟/2
-	
-//	/* Set the Vector Table base address at 0x08000000 */
-//	NVIC_SetVectorTable( NVIC_VectTab_FLASH, 0x0 );
-
-//	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
 
 	/* Configure HCLK clock as SysTick clock source. */
 	SysTick_CLKSourceConfig( SysTick_CLKSource_HCLK );
@@ -130,8 +125,6 @@ static void prvSetupHardware( void )
 {
 	// 内部外设结构体变量
 	GPIO_InitTypeDef  	GPIO_InitStructure;	
-//	NVIC_InitTypeDef	NVIC_InitStructure;
-	
 	
 	//时钟配置											
 	RCC_Config();
@@ -164,12 +157,6 @@ static void prvSetupHardware( void )
 	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_0;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);	
-	
-	// 系统中断初始化 -> 系统所用中断
-//	NVIC_InitStructure.NVIC_IRQChannel = SVCall_IRQn;	
-//	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-//	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-//	NVIC_Init(&NVIC_InitStructure);	
 }
 
 

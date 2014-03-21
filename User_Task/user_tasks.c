@@ -14,7 +14,7 @@
 #include "user_tasks.h"	
 
 
-static xSemaphoreHandle xButtonSpeedUpSemaphore;	// 按键信号
+static xSemaphoreHandle xButtonPushSemaphore;	// 按键信号, 全局本地的......
 
 //=========================================================================================================
 /**
@@ -26,7 +26,7 @@ static xSemaphoreHandle xButtonSpeedUpSemaphore;	// 按键信号
 void prvLED_BlinkTask(void *pvParameters)
 {
         portTickType xNextWakeTime;
-        const portTickType xFrequency = 100;
+        const portTickType xFrequency = 500;
         xNextWakeTime = xTaskGetTickCount();
         for(;;)
         {				
@@ -50,7 +50,7 @@ void prvPort_ToggleTask(void *pvParameters)
 		vTaskDelay(80);
 	}
 }	
-	
+
 	
 //=========================================================================================================
 /**
@@ -63,15 +63,15 @@ void prvButtonCheckTask(void *pvParameters)
 {	
         static uint8_t bounce_count;
         portTickType xNextWakeTime;
-        const portTickType xFrequency = 10;
+        const portTickType xFrequency = 30;
         xNextWakeTime = xTaskGetTickCount();
 
         /* 创建信号 */
-        vSemaphoreCreateBinary(xButtonSpeedUpSemaphore);	
+        vSemaphoreCreateBinary(xButtonPushSemaphore);	
 
         /* 如果创建信号成功，将信号初始化为0 */	
-        if (xButtonSpeedUpSemaphore != NULL) {
-                xSemaphoreTake(xButtonSpeedUpSemaphore, (portTickType)0);
+        if (xButtonPushSemaphore != NULL) {
+                xSemaphoreTake(xButtonPushSemaphore, (portTickType)0);
         }	
 
         for(;;) {
@@ -82,12 +82,10 @@ void prvButtonCheckTask(void *pvParameters)
                         {	
 				// 如果不清零的话, 就得加到溢出然后再重新加到才行, 结果就是会很迟钝
 				bounce_count = 0;	
-				GPIOE->ODR ^= (GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_14);
-                                xSemaphoreGive(xButtonSpeedUpSemaphore);//释放按键信号 
+                                xSemaphoreGive(xButtonPushSemaphore);//释放按键信号 
                         }
                 }
                 /* 每隔Nms检测一次 */ 
                 vTaskDelayUntil(&xNextWakeTime,xFrequency);
         }
 }
-
