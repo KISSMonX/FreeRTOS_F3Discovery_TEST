@@ -28,42 +28,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "LSM303DLHC.h"
 
-/** @addtogroup Utilities
-  * @{
-  */ 
-
-/** @addtogroup STM32F3_DISCOVERY
-  * @{
-  */ 
-
-/** @addtogroup STM32F3_DISCOVERY_LSM303DLHC
-  * @{
-  */
-
-
-/** @defgroup STM32F3_DISCOVERY_LSM303DLHC_Private_TypesDefinitions
-  * @{
-  */
-
-/**
-  * @}
-  */
-
-/** @defgroup STM32F3_DISCOVERY_LSM303DLHC_Private_Defines
-  * @{
-  */
-
-/**
-  * @}
-  */
-
-/** @defgroup STM32F3_DISCOVERY_LSM303DLHC_Private_Macros
-  * @{
-  */
-
-/**
-  * @}
-  */ 
   
 /** @defgroup STM32F3_DISCOVERY_LSM303DLHC_Private_Variables
   * @{
@@ -225,12 +189,10 @@ void LSM303DLHC_AccIT1Config(uint8_t LSM303DLHC_IT, FunctionalState NewState)
 
 	tmpval &= ~LSM303DLHC_IT;
 
-	if (NewState != DISABLE)
-	{
+	if (NewState != DISABLE) {
 		tmpval |= LSM303DLHC_IT;
 	}
-	else
-	{
+	else {
 		/* Disable the selected interrupt */
 		tmpval =~ LSM303DLHC_IT;
 	}
@@ -495,7 +457,8 @@ uint16_t LSM303DLHC_Read(uint8_t DeviceAddr, uint8_t RegAddr, uint8_t* pBuffer, 
 	LSM303DLHC_Timeout = LSM303DLHC_LONG_TIMEOUT;
 	while(I2C_GetFlagStatus(LSM303DLHC_I2C, I2C_ISR_BUSY) != RESET)
 	{
-		if((LSM303DLHC_Timeout--) == 0) return LSM303DLHC_TIMEOUT_UserCallback();
+		if((LSM303DLHC_Timeout--) == 0) 
+			return LSM303DLHC_TIMEOUT_UserCallback();
 	}
 
 	/* Configure slave address, nbytes, reload, end mode and start or stop generation */
@@ -505,7 +468,8 @@ uint16_t LSM303DLHC_Read(uint8_t DeviceAddr, uint8_t RegAddr, uint8_t* pBuffer, 
 	LSM303DLHC_Timeout = LSM303DLHC_LONG_TIMEOUT;
 	while(I2C_GetFlagStatus(LSM303DLHC_I2C, I2C_ISR_TXIS) == RESET)
 	{
-		if((LSM303DLHC_Timeout--) == 0) return LSM303DLHC_TIMEOUT_UserCallback();
+		if((LSM303DLHC_Timeout--) == 0) 
+			return LSM303DLHC_TIMEOUT_UserCallback();
 	}
 
 	if(NumByteToRead>1)
@@ -519,7 +483,8 @@ uint16_t LSM303DLHC_Read(uint8_t DeviceAddr, uint8_t RegAddr, uint8_t* pBuffer, 
 	LSM303DLHC_Timeout = LSM303DLHC_LONG_TIMEOUT;
 	while(I2C_GetFlagStatus(LSM303DLHC_I2C, I2C_ISR_TC) == RESET)
 	{
-		if((LSM303DLHC_Timeout--) == 0) return LSM303DLHC_TIMEOUT_UserCallback();
+		if((LSM303DLHC_Timeout--) == 0) 
+			return LSM303DLHC_TIMEOUT_UserCallback();
 	}  
 
 	/* Configure slave address, nbytes, reload, end mode and start or stop generation */
@@ -548,7 +513,8 @@ uint16_t LSM303DLHC_Read(uint8_t DeviceAddr, uint8_t RegAddr, uint8_t* pBuffer, 
 	LSM303DLHC_Timeout = LSM303DLHC_LONG_TIMEOUT;
 	while(I2C_GetFlagStatus(LSM303DLHC_I2C, I2C_ISR_STOPF) == RESET)   
 	{
-		if((LSM303DLHC_Timeout--) == 0) return LSM303DLHC_TIMEOUT_UserCallback();
+		if((LSM303DLHC_Timeout--) == 0) 
+			return LSM303DLHC_TIMEOUT_UserCallback();
 	}
 
 	/* Clear STOPF flag */
@@ -645,6 +611,7 @@ static void LSM303DLHC_LowLevel_Init(void)
 	GPIO_InitStructure.GPIO_Pin = LSM303DLHC_I2C_INT2_PIN;
 	GPIO_Init(LSM303DLHC_I2C_INT2_GPIO_PORT, &GPIO_InitStructure);
 }  
+
 
 #ifdef USE_DEFAULT_TIMEOUT_CALLBACK
 /**

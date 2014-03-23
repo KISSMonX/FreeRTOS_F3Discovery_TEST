@@ -434,18 +434,6 @@ uint32_t L3GD20_TIMEOUT_UserCallback(void)
 }
 #endif /* USE_DEFAULT_TIMEOUT_CALLBACK */
 
-#ifndef USE_DEFAULT_TIMEOUT_CALLBACK
-/**
- * @brief  Basic management of the timeout situation.
- * @param  None.
- * @retval None.
- */
-uint32_t L3GD20_TIMEOUT_UserCallback(void)
-{
-        return 0;
-}
-#endif /* USE_DEFAULT_TIMEOUT_CALLBACK */
-
 
 /**
  * @brief  Configure the Mems to gyroscope application.

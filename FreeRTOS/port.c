@@ -30,7 +30,7 @@ the application writer wants to provide their own implementation of
 vPortSetupTimerInterrupt().  Ensure configOVERRIDE_DEFAULT_TICK_CONFIGURATION
 is defined. */
 #ifndef configOVERRIDE_DEFAULT_TICK_CONFIGURATION
-	#define configOVERRIDE_DEFAULT_TICK_CONFIGURATION 0
+	#define configOVERRIDE_DEFAULT_TICK_CONFIGURATION 	0
 #endif
 
 /* Constants required to manipulate the core.  Registers first... */
@@ -449,8 +449,8 @@ void xPortSysTickHandler( void )
 
 	__weak void vPortSuppressTicksAndSleep( TickType_t xExpectedIdleTime )
 	{
-	uint32_t ulReloadValue, ulCompleteTickPeriods, ulCompletedSysTickDecrements, ulSysTickCTRL;
-	TickType_t xModifiableIdleTime;
+		uint32_t ulReloadValue, ulCompleteTickPeriods, ulCompletedSysTickDecrements, ulSysTickCTRL;
+		TickType_t xModifiableIdleTime;
 
 		/* Make sure the SysTick reload value does not overflow the counter. */
 		if( xExpectedIdleTime > xMaximumPossibleSuppressedTicks )
@@ -534,8 +534,7 @@ void xPortSysTickHandler( void )
 			above. */
 			__enable_irq();
 
-			if( ( ulSysTickCTRL & portNVIC_SYSTICK_COUNT_FLAG_BIT ) != 0 )
-			{
+			if( ( ulSysTickCTRL & portNVIC_SYSTICK_COUNT_FLAG_BIT ) != 0 ) {
 				uint32_t ulCalculatedLoadValue;
 
 				/* The tick interrupt has already executed, and the SysTick
@@ -561,8 +560,7 @@ void xPortSysTickHandler( void )
 				time spent waiting. */
 				ulCompleteTickPeriods = xExpectedIdleTime - 1UL;
 			}
-			else
-			{
+			else {
 				/* Something other than the tick interrupt ended the sleep.
 				Work out how long the sleep lasted rounded to complete tick
 				periods (not the ulReload value which accounted for part
@@ -656,8 +654,8 @@ __asm uint32_t vPortGetIPSR( void )
 
 	void vPortValidateInterruptPriority( void )
 	{
-	uint32_t ulCurrentInterrupt;
-	uint8_t ucCurrentPriority;
+		uint32_t ulCurrentInterrupt;
+		uint8_t ucCurrentPriority;
 
 		/* Obtain the number of the currently executing interrupt. */
 		ulCurrentInterrupt = vPortGetIPSR();

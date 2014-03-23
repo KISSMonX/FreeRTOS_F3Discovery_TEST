@@ -138,8 +138,7 @@ that is used to determine which message type is valid. */
 typedef struct tmrTimerQueueMessage
 {
 	BaseType_t			xMessageID;			/*<< The command being sent to the timer service task. */
-	union
-	{
+	union {
 		TimerParameter_t xTimerParameters;
 
 		/* Don't include xCallbackParameters if it is not going to be used as
@@ -243,8 +242,7 @@ BaseType_t xTimerCreateTimerTask( void )
 	been created then the initialisation will already have been performed. */
 	prvCheckForValidListAndQueue();
 
-	if( xTimerQueue != NULL )
-	{
+	if( xTimerQueue != NULL ) {
 		#if ( INCLUDE_xTimerGetTimerDaemonTaskHandle == 1 )
 		{
 			/* Create the timer task, storing its handle in xTimerTaskHandle so
@@ -258,8 +256,7 @@ BaseType_t xTimerCreateTimerTask( void )
 		}
 		#endif
 	}
-	else
-	{
+	else {
 		mtCOVERAGE_TEST_MARKER();
 	}
 
@@ -273,15 +270,12 @@ TimerHandle_t xTimerCreate( const char * const pcTimerName, const TickType_t xTi
 	Timer_t *pxNewTimer;
 
 	/* Allocate the timer structure. */
-	if( xTimerPeriodInTicks == ( TickType_t ) 0U )
-	{
+	if( xTimerPeriodInTicks == ( TickType_t ) 0U ) {
 		pxNewTimer = NULL;
 	}
-	else
-	{
+	else {
 		pxNewTimer = ( Timer_t * ) pvPortMalloc( sizeof( Timer_t ) );
-		if( pxNewTimer != NULL )
-		{
+		if( pxNewTimer != NULL ) {
 			/* Ensure the infrastructure used by the timer service task has been
 			created/initialised. */
 			prvCheckForValidListAndQueue();
@@ -296,8 +290,7 @@ TimerHandle_t xTimerCreate( const char * const pcTimerName, const TickType_t xTi
 
 			traceTIMER_CREATE( pxNewTimer );
 		}
-		else
-		{
+		else {
 			traceTIMER_CREATE_FAILED();
 		}
 	}
@@ -316,33 +309,27 @@ BaseType_t xTimerGenericCommand( TimerHandle_t xTimer, const BaseType_t xCommand
 
 	/* Send a message to the timer service task to perform a particular action
 	on a particular timer definition. */
-	if( xTimerQueue != NULL )
-	{
+	if( xTimerQueue != NULL ) {
 		/* Send a command to the timer service task to start the xTimer timer. */
 		xMessage.xMessageID = xCommandID;
 		xMessage.u.xTimerParameters.xMessageValue = xOptionalValue;
 		xMessage.u.xTimerParameters.pxTimer = ( Timer_t * ) xTimer;
 
-		if( xCommandID < tmrFIRST_FROM_ISR_COMMAND )
-		{
-			if( xTaskGetSchedulerState() == taskSCHEDULER_RUNNING )
-			{
+		if( xCommandID < tmrFIRST_FROM_ISR_COMMAND ) {
+			if( xTaskGetSchedulerState() == taskSCHEDULER_RUNNING ) {
 				xReturn = xQueueSendToBack( xTimerQueue, &xMessage, xTicksToWait );
 			}
-			else
-			{
+			else {
 				xReturn = xQueueSendToBack( xTimerQueue, &xMessage, tmrNO_DELAY );
 			}
 		}
-		else
-		{
+		else {
 			xReturn = xQueueSendToBackFromISR( xTimerQueue, &xMessage, pxHigherPriorityTaskWoken );
 		}
 
 		traceTIMER_COMMAND_SEND( xTimer, xCommandID, xOptionalValue, xReturn );
 	}
-	else
-	{
+	else {
 		mtCOVERAGE_TEST_MARKER();
 	}
 

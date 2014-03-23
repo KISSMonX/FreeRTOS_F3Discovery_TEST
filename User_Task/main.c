@@ -3,6 +3,8 @@
 //=========================================================================================================
 #include "STM32F30x.h"
 #include "user_tasks.h"	
+#include "usart.h"
+#include "sensors.h"
 
 
 unsigned long ulRunTimeStatsClock = 0;
@@ -126,10 +128,6 @@ static void prvSetupHardware( void )
 	// 内部外设结构体变量
 	GPIO_InitTypeDef  	GPIO_InitStructure;	
 	
-	//时钟配置											
-	RCC_Config();
-	
-	
 	// 设置 MCO 引脚输出到 PA8
 	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_8;
 	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF ;  // OUT 模式再试试, 据说只能复用模式才能输出
@@ -157,6 +155,14 @@ static void prvSetupHardware( void )
 	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_0;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);	
+	
+	//=================================================================================================										
+	RCC_Config();			// 时钟配置	
+	USART1_Init(115200, ENABLE);	// 波特率和中断使能
+	printf("\fUSART1 initialized!\n\r");
+	
+	/* Initialize compass */
+        Compass_Config();
 }
 
 
